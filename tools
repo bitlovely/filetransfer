@@ -1,0 +1,364 @@
+<?php
+
+
+if (!(posix_getpwuid(posix_geteuid())['name'] != 'root')) {
+	goto label11;
+}
+
+exit('Please run as root!' . "\n");
+
+label11:
+
+require str_replace('\\', '/', dirname($argv[0])) . '/includes/admin.php';
+echo "\n";
+$dabeadfcc3ba1288 = (1 < count($argv) ? $argv[1] : NULL);
+
+switch ($dabeadfcc3ba1288) {
+case 'rescue':
+	$b62d6460eb33ea07->query('DELETE FROM `access_codes` WHERE `code` = \'rescue\';');
+	$b62d6460eb33ea07->query('INSERT INTO `access_codes`(`code`, `type`, `enabled`, `groups`) VALUES(\'rescue\', 0, 1, \'[1]\');');
+	echo 'A rescue access code has been created.' . "\n" . 'Please ensure you delete this after you\'re done with it.' . "\n";
+	echo 'Access: http://' . XUI::$rServers[SERVER_ID]['server_ip'] . ':' . XUI::$rServers[SERVER_ID]['http_broadcast_port'] . '/rescue/' . "\n\n";
+	D670A8140995cd6f();
+	shell_exec('sudo ' . XUI_HOME . 'service reload 2>/dev/null');
+	goto label715;
+case 'access':
+	echo 'Generating access code configuration...' . "\n\n";
+	d670A8140995CD6F();
+	shell_exec('sudo ' . XUI_HOME . 'service reload 2>/dev/null');
+
+	foreach (eFaDb87D8c867176(0) as $E28b12c74d51f0b0) {
+		echo 'http://' . XUI::$rServers[SERVER_ID]['server_ip'] . ':' . XUI::$rServers[SERVER_ID]['http_broadcast_port'] . '/' . $E28b12c74d51f0b0['code'] . '/' . "\n";
+	}
+
+	echo "\n";
+	goto label715;
+case 'ports':
+	goto label142;
+
+	label115:
+
+	goto label715;
+	goto label360;
+
+	label117:
+
+	echo 'HTTP Ports: ' . implode(', ', $a998abd856b07a59['http']) . "\n";
+
+	label125:
+
+	if (!(0 < count($a998abd856b07a59['https']))) {
+		goto label141;
+	}
+
+	echo 'SSL Ports: ' . implode(', ', $a998abd856b07a59['https']) . "\n";
+
+	label141:
+
+	goto label345;
+
+	label142:
+
+	echo 'Generating port configuration...' . "\n\n";
+	$a998abd856b07a59 = ['http' => array_unique(array_merge([XUI::$rServers[SERVER_ID]['http_broadcast_port']], explode(',', XUI::$rServers[SERVER_ID]['http_ports_add']) ?: [])), 'https' => array_unique(array_merge([XUI::$rServers[SERVER_ID]['https_broadcast_port']], explode(',', XUI::$rServers[SERVER_ID]['https_ports_add']) ?: [])), 'rtmp' => XUI::$rServers[SERVER_ID]['rtmp_port']];
+
+	foreach ($a998abd856b07a59 as $Bb672d1983256a93 => $c2339b431f4d68cb) {
+		goto label306;
+
+		label200:
+
+		goto label240;
+
+		label202:
+
+		$b561b53d14596926 = [];
+
+		foreach ($c2339b431f4d68cb as $e5bebfb39a19fe80) {
+			if (!(is_numeric($e5bebfb39a19fe80) && (80 <= $e5bebfb39a19fe80) && ($e5bebfb39a19fe80 <= 65535))) {
+				goto label226;
+			}
+
+			$b561b53d14596926[] = 'listen ' . intval($e5bebfb39a19fe80) . ' ssl;';
+
+			label226:
+		}
+
+		goto label230;
+
+		label230:
+
+		file_put_contents(XUI_HOME . 'bin/nginx/conf/ports/https.conf', implode(' ', $b561b53d14596926));
+
+		label240:
+
+		goto label304;
+
+		label242:
+
+		$b561b53d14596926 = [];
+		goto label245;
+
+		label245:
+
+		foreach ($c2339b431f4d68cb as $e5bebfb39a19fe80) {
+			if (!(is_numeric($e5bebfb39a19fe80) && (80 <= $e5bebfb39a19fe80) && ($e5bebfb39a19fe80 <= 65535))) {
+				goto label268;
+			}
+
+			$b561b53d14596926[] = 'listen ' . intval($e5bebfb39a19fe80) . ';';
+
+			label268:
+		}
+
+		file_put_contents(XUI_HOME . 'bin/nginx/conf/ports/http.conf', implode(' ', $b561b53d14596926));
+		file_put_contents(XUI_HOME . 'bin/nginx_rtmp/conf/live.conf', 'on_play http://127.0.0.1:' . intval($c2339b431f4d68cb[0]) . '/stream/rtmp; on_publish http://127.0.0.1:' . intval($c2339b431f4d68cb[0]) . '/stream/rtmp; on_play_done http://127.0.0.1:' . intval($c2339b431f4d68cb[0]) . '/stream/rtmp;');
+
+		label304:
+
+		goto label332;
+
+		label306:
+
+		if ($Bb672d1983256a93 == 'http') {
+			goto label242;
+		}
+
+		if ($Bb672d1983256a93 == 'https') {
+			goto label202;
+		}
+
+		if (!($Bb672d1983256a93 == 'rtmp')) {
+			goto label330;
+		}
+
+		file_put_contents(XUI_HOME . 'bin/nginx_rtmp/conf/port.conf', 'listen ' . intval($c2339b431f4d68cb) . ';');
+
+		label330:
+
+		goto label200;
+
+		label332:
+
+		goto label334;
+
+		label334:
+	}
+
+	if (!(0 < count($a998abd856b07a59['http']))) {
+		goto label125;
+	}
+
+	goto label117;
+
+	label345:
+
+	if (empty($a998abd856b07a59['http'])) {
+		goto label352;
+	}
+
+	echo 'RTMP Port: ' . $a998abd856b07a59['rtmp'] . "\n";
+
+	label352:
+
+	shell_exec('sudo ' . XUI_HOME . 'service reload 2>/dev/null');
+	echo "\n";
+	goto label115;
+case 'user':
+	label360:
+
+	goto label387;
+
+	label361:
+
+	echo 'Username: rescue' . "\n";
+	echo 'Password: ' . $fd093b5358e9a519 . "\n\n";
+	goto label715;
+	goto label406;
+
+	label368:
+
+	$fd093b5358e9a519 = fc34407B2842461B(10);
+	$b62d6460eb33ea07->query('DELETE FROM `users` WHERE `username` = \'rescue\';');
+	$F647a429f8089f01 = ['username' => 'rescue', 'password' => $fd093b5358e9a519, 'member_group_id' => 1, 'status' => 1, 'credits' => 0];
+	API::D3824406Bc4f2A23($F647a429f8089f01, true);
+	echo 'A rescue user has been created.' . "\n" . 'Please ensure you delete this after you\'re done with it.' . "\n";
+	goto label361;
+
+	label387:
+
+	$fb719dae9595b9fa = a752238c4005cbBc(1);
+	if (!(!$fb719dae9595b9fa || !$fb719dae9595b9fa['is_admin'])) {
+		goto label405;
+	}
+
+	$b62d6460eb33ea07->query('DELETE FROM `users_groups` WHERE `group_id` = 1;');
+	$b62d6460eb33ea07->query('INSERT INTO `users_groups` (`group_id`, `group_name`, `is_admin`, `is_reseller`, `total_allowed_gen_trials`, `total_allowed_gen_in`, `delete_users`, `allowed_pages`, `can_delete`, `create_sub_resellers`, `create_sub_resellers_price`, `reseller_client_connection_logs`, `can_view_vod`, `allow_download`, `minimum_trial_credits`, `allow_restrictions`, `allow_change_username`, `allow_change_password`, `minimum_username_length`, `minimum_password_length`) VALUES (1, \'Administrators\', 1, 0, 0, \'day\', 0, \'[]\', 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 8, 8);');
+
+	label405:
+
+	goto label368;
+case 'mysql':
+	label406:
+
+	EDA0b738B69cF18f();
+	echo 'Load balancers have been granted access to MySQL in the system.' . "\n\n";
+	goto label715;
+case 'database':
+	goto label609;
+
+	label411:
+
+	file_put_contents(XUI_HOME . 'bin/daemons.sh', $D44e681aa6953706);
+	file_put_contents(XUI_HOME . 'bin/nginx/conf/balance.conf', $Df6cb645a89ccbec . '}');
+	shell_exec('sudo systemctl stop xuione');
+	shell_exec('sudo systemctl start xuione');
+	echo 'Access: http://' . $b38e11ffdc6a3abb . '/rescue/' . "\n\n";
+	goto label434;
+
+	label434:
+
+	echo 'Username: rescue' . "\n";
+	echo 'Password: ' . $fd093b5358e9a519 . "\n\n";
+	echo 'You need to edit the server settings after logging in.' . "\n\n";
+	goto label715;
+	goto label624;
+
+	label442:
+
+	$F647a429f8089f01 = ['username' => 'rescue', 'password' => $fd093b5358e9a519, 'member_group_id' => 1, 'status' => 1, 'credits' => 0];
+	API::d3824406Bc4f2a23($F647a429f8089f01, true);
+	echo 'Blank XUI database has been restored.' . "\n" . 'Configuring ports...' . "\n";
+	$Cc9358ec75bd69ae = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+	socket_connect($Cc9358ec75bd69ae, '8.8.8.8', 53);
+	goto label588;
+
+	label468:
+
+	shell_exec('sudo mysql xui < "' . XUI_HOME . 'bin/install/database.sql"');
+	shell_exec('sudo ' . PHP_BIN . ' ' . INCLUDES_PATH . 'startup.php');
+	EdA0B738B69CF18f();
+	$b62d6460eb33ea07 = new Database('TKbxeQrBXw2swDNwTh5yrj4jMV4RaLO0');
+	XUI::$db = &$b62d6460eb33ea07;
+	goto label492;
+
+	label492:
+
+	XUI::init();
+	API::$db = &$b62d6460eb33ea07;
+	API::init();
+	$b62d6460eb33ea07->query('INSERT INTO `access_codes`(`code`, `type`, `enabled`, `groups`) VALUES(\'rescue\', 0, 1, \'[1]\');');
+	$fd093b5358e9a519 = Fc34407b2842461b(10);
+	goto label442;
+
+	label506:
+
+	file_put_contents(XUI_HOME . 'bin/nginx/conf/ports/https.conf', 'listen 443 ssl;');
+	file_put_contents(XUI_HOME . 'bin/nginx_rtmp/conf/live.conf', 'on_play http://127.0.0.1:80/stream/rtmp; on_publish http://127.0.0.1:80/stream/rtmp; on_play_done http://127.0.0.1:80/stream/rtmp;');
+	file_put_contents(XUI_HOME . 'bin/nginx_rtmp/conf/port.conf', 'listen 8880;');
+	$B58e729ea1b688b7 = 4;
+	shell_exec('sudo rm ' . XUI_HOME . 'bin/php/etc/*.conf');
+	goto label532;
+
+	label532:
+
+	$D44e681aa6953706 = '#! /bin/bash' . "\n";
+	$Df6cb645a89ccbec = 'upstream php {' . "\n" . '    least_conn;' . "\n";
+	$Ed57ec34fa5a51be = file_get_contents(XUI_HOME . 'bin/php/etc/template');
+
+	foreach (range(1, $B58e729ea1b688b7) as $df6991d59f367c7e) {
+		$D44e681aa6953706 .= 'start-stop-daemon --start --quiet --pidfile ' . XUI_HOME . 'bin/php/sockets/' . $df6991d59f367c7e . '.pid --exec ' . XUI_HOME . 'bin/php/sbin/php-fpm -- --daemonize --fpm-config ' . XUI_HOME . 'bin/php/etc/' . $df6991d59f367c7e . '.conf' . "\n";
+		$Df6cb645a89ccbec .= '    server unix:' . XUI_HOME . 'bin/php/sockets/' . $df6991d59f367c7e . '.sock;' . "\n";
+		file_put_contents(XUI_HOME . 'bin/php/etc/' . $df6991d59f367c7e . '.conf', str_replace('#PATH#', XUI_HOME, str_replace('#ID#', $df6991d59f367c7e, $Ed57ec34fa5a51be)));
+	}
+
+	goto label411;
+
+	label588:
+
+	socket_getsockname($Cc9358ec75bd69ae, $b38e11ffdc6a3abb);
+	socket_shutdown($Cc9358ec75bd69ae);
+	socket_close($Cc9358ec75bd69ae);
+	$b62d6460eb33ea07->query('UPDATE `servers` SET `server_ip` = ? WHERE `id` = 1;', $b38e11ffdc6a3abb);
+	file_put_contents(XUI_HOME . 'bin/nginx/conf/ports/http.conf', 'listen 80;');
+	goto label506;
+
+	label609:
+
+	if (file_exists(XUI_HOME . 'bin/install/database.sql')) {
+		goto label617;
+	}
+
+	exit('FATAL: database.sql file is missing from the installation.');
+
+	label617:
+
+	$b62d6460eb33ea07->query('DROP DATABASE IF EXISTS `xui`;');
+	$b62d6460eb33ea07->query('CREATE DATABASE IF NOT EXISTS `xui`;');
+	goto label468;
+case 'migration':
+	label624:
+
+	goto label637;
+
+	label625:
+
+	shell_exec('sudo mysql xui_migrate < ' . escapeshellarg($Fd6640a19723cd4d));
+	echo 'If no errors were shown above, restore was completed.' . "\n\n";
+
+	label633:
+
+	EDA0b738B69cf18F();
+	goto label715;
+	goto label676;
+
+	label637:
+
+	$b62d6460eb33ea07->query('DROP DATABASE IF EXISTS `xui_migrate`;');
+	$b62d6460eb33ea07->query('CREATE DATABASE IF NOT EXISTS `xui_migrate`;');
+	echo 'Migration database has been cleared.' . "\n";
+	$Fd6640a19723cd4d = (count($argv) == 3 ? $argv[2] : NULL);
+	if ($Fd6640a19723cd4d && file_exists($Fd6640a19723cd4d) && pathinfo($Fd6640a19723cd4d['extension'] == 'sql')) {
+		goto label672;
+	}
+
+	goto label669;
+
+	label669:
+
+	echo 'You can restore a database to it using:' . "\n";
+	echo 'sudo mysql xui_migrate < backup.sql' . "\n\n";
+	goto label633;
+
+	label672:
+
+	echo 'Restoring: ' . $Fd6640a19723cd4d . "\n";
+	goto label625;
+case 'flush':
+	label676:
+
+	$b62d6460eb33ea07->query('TRUNCATE `blocked_ips`;');
+	shell_exec('sudo rm ' . FLOOD_TMP_PATH . 'block_*');
+	shell_exec('sudo ' . BIN_PATH . 'nginx/sbin/nginx -s reload');
+	shell_exec('sudo ' . BIN_PATH . 'nginx_rtmp/sbin/nginx_rtmp -s reload');
+	shell_exec('sudo iptables -F && sudo ip6tables -F');
+	shell_exec('sudo iptables-save && sudo ip6tables-save');
+	echo 'Blocked IP\'s have been flushed.' . "\n\n";
+	goto label715;
+default:
+	echo 'Actions' . "\n" . '----------------------------------------------------------------' . "\n";
+	echo 'rescue' . "\t\t\t" . 'Create a rescue access code for the admin panel.' . "\n";
+	echo 'user' . "\t\t\t" . 'Create a rescue admin user for the admin panel.' . "\n";
+	echo 'mysql' . "\t\t\t" . 'Reauthorise load balancers on MySQL.' . "\n";
+	echo 'database' . "\t\t" . 'Restore blank XUI database.' . "\n";
+	echo 'migration' . "\t\t" . 'Clear migration database.' . "\n";
+	echo 'flush' . "\t\t\t" . 'Flush blocked IP database.' . "\n";
+	echo 'ports' . "\t\t\t" . 'Regenerate ports from SQL table.' . "\n";
+	echo 'access' . "\t\t\t" . 'Regenerate access codes from SQL table.' . "\n\n";
+	goto label715;
+}
+
+label715:
+
+exit();
+
+?>

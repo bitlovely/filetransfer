@@ -1,0 +1,3914 @@
+<?php
+
+
+function ed28Cb44Bc386D46()
+{
+	$Ed3ae7262e121bb3 = 0;
+	exec('ps -fp $(pgrep -u xui 2>/dev/null) 2>/dev/null', $d094d3e133ec8c03, $ced57d71bc7400ec);
+
+	foreach ($d094d3e133ec8c03 as $d0bf680e3271ee34) {
+		$E3665d09b9cea208 = explode(' ', preg_replace('!\\s+!', ' ', trim($d0bf680e3271ee34)));
+		if (!(($E3665d09b9cea208[8] == 'nginx:') && ($E3665d09b9cea208[9] == 'master'))) {
+			goto label33;
+		}
+
+		$Ed3ae7262e121bb3++;
+
+		label33:
+	}
+
+	return 0 < $Ed3ae7262e121bb3;
+}
+
+function f37a94A42dE0B72A()
+{
+	XUI::$db->query('SELECT * FROM `servers`');
+	$Bcf70cba56392975 = [];
+	$bb09da03c2515c8c = [1];
+
+	foreach (XUI::$db->get_rows() as $Fb9da1713bff19ce) {
+		goto label43;
+
+		label13:
+		$Fb9da1713bff19ce['server_online'] = ($Fb9da1713bff19ce['enabled'] && (in_array($Fb9da1713bff19ce['status'], $bb09da03c2515c8c) && ((time() - $Fb9da1713bff19ce['last_check_ago']) <= $f0bad4f5408fb256))) || (SERVER_ID == $Fb9da1713bff19ce['id']);
+		$Bcf70cba56392975[intval($Fb9da1713bff19ce['id'])] = $Fb9da1713bff19ce;
+		goto label117;
+
+		label43:
+
+		if (empty($Fb9da1713bff19ce['domain_name'])) {
+			goto label65;
+		}
+
+		$A7ca171405b19571 = str_replace(['http://', '/', 'https://'], '', escapeshellcmd(explode(',', $Fb9da1713bff19ce['domain_name'])[0]));
+		goto label78;
+
+		label65:
+
+		$A7ca171405b19571 = escapeshellcmd($Fb9da1713bff19ce['server_ip']);
+		goto label78;
+
+		label72:
+
+		$f0bad4f5408fb256 = 90;
+		goto label76;
+
+		label75:
+
+		$f0bad4f5408fb256 = 180;
+
+		label76:
+
+		goto label13;
+
+		label78:
+
+		if ($Fb9da1713bff19ce['enable_https'] == 1) {
+			goto label86;
+		}
+
+		$Bf9be24c69c0f17b = 'http';
+		goto label89;
+
+		label86:
+
+		goto label88;
+
+		label88:
+
+		$Bf9be24c69c0f17b = 'https';
+
+		label89:
+
+		$e5bebfb39a19fe80 = ($Bf9be24c69c0f17b == 'http' ? intval($Fb9da1713bff19ce['http_broadcast_port']) : intval($Fb9da1713bff19ce['https_broadcast_port']));
+		$Fb9da1713bff19ce['site_url'] = $Bf9be24c69c0f17b . '://' . $A7ca171405b19571 . ':' . $e5bebfb39a19fe80 . '/';
+
+		if ($Fb9da1713bff19ce['server_type'] == 1) {
+			goto label75;
+		}
+
+		goto label72;
+
+		label117:
+	}
+
+	return $Bcf70cba56392975;
+}
+
+function FC34407b2842461B($Fc7fdb080dbcd39f = 10)
+{
+	goto label2;
+
+	label2:
+
+	$A545d770b42f7e1b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789qwertyuiopasdfghjklzxcvbnm';
+	$e5ed22dc86d465a8 = '';
+	$a19cea75625f6914 = strlen($A545d770b42f7e1b) - 1;
+	$df6991d59f367c7e = 0;
+
+	label10:
+
+	goto label13;
+
+	label11:
+
+	return $e5ed22dc86d465a8;
+	goto label27;
+
+	label13:
+
+	if (!($df6991d59f367c7e < $Fc7fdb080dbcd39f)) {
+		goto label11;
+	}
+
+	$e5ed22dc86d465a8 .= $A545d770b42f7e1b[rand(0, $a19cea75625f6914)];
+	$df6991d59f367c7e++;
+	goto label10;
+	goto label11;
+
+	label27:
+}
+
+goto label169;
+
+label1:
+
+XUI::$db->query('SHOW COLUMNS FROM `watch_folders` LIKE \'server_add\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label16;
+}
+
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `server_add` VARCHAR(512) NULL DEFAULT NULL;');
+
+label16:
+
+goto label848;
+
+label17:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label32;
+}
+
+XUI::$db->query('ALTER TABLE `lines` ADD COLUMN `updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;');
+XUI::$db->query('UPDATE `lines` SET `updated` = CURRENT_TIMESTAMP;');
+
+label32:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'player_blur\';');
+goto label5144;
+
+label37:
+
+$Dbdc22406030e489 = Xui\Functions::updateLicense('TKbxeQrBXw2swDNwTh5yrj4jMV4RaLO0', $e5bebfb39a19fe80);
+
+if ($Dbdc22406030e489['status']) {
+	goto label50;
+}
+
+echo 'Failed to generate license! Error: ' . $Dbdc22406030e489['error'] . "\n\n";
+goto label2788;
+
+label50:
+
+goto label2765;
+
+label51:
+
+XUI::$db->query('INSERT INTO `crontab` (`filename`, `time`, `enabled`) VALUES (\'cache_engine.php\', \'*/5 * * * *\', 1);');
+unlink(XUI_HOME . 'tmp/crontab');
+
+label60:
+
+XUI::$db->query('SELECT * FROM `crontab` WHERE `filename` = \'tmdb_popular.php\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3660;
+}
+
+goto label3642;
+
+label72:
+
+XUI::$db->query('UPDATE `settings` SET `mag_default_type` = 1;');
+XUI::$db->query('UPDATE `mag_devices` SET `theme_type` = 1;');
+goto label3359;
+
+label81:
+
+XUI::$db->query('UPDATE `settings` SET `stalker_theme` = \'default\';');
+goto label3355;
+
+label86:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label97;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `legacy_panel_api` TINYINT(4) NULL DEFAULT \'0\';');
+
+label97:
+
+XUI::$db->query('SHOW COLUMNS FROM `lines` LIKE \'allowed_outputs\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label803;
+}
+
+goto label799;
+
+label109:
+
+XUI::$db->query('ALTER TABLE `panel_logs` ADD COLUMN `server_id` INT(11) NULL DEFAULT NULL;');
+
+label113:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'auto_send_logs\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2952;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `auto_send_logs` TINYINT(1) NULL DEFAULT \'0\';');
+goto label2952;
+
+label129:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'max_encode_movies\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label144;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `max_encode_movies` INT(11) NULL DEFAULT \'10\';');
+
+label144:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'max_encode_cc\';');
+goto label908;
+
+label149:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `update_data` MEDIUMTEXT NULL DEFAULT NULL;');
+
+label153:
+
+XUI::$db->query('SHOW INDEXES IN `streams_series` WHERE `key_name` = \'tmdb_id\';');
+
+if (!(0 < XUI::$db->num_rows())) {
+	goto label3928;
+}
+
+XUI::$db->query('ALTER TABLE `streams_series` DROP INDEX `tmdb_id`;');
+goto label3928;
+
+label169:
+
+if (!(posix_getpwuid(posix_geteuid())['name'] != 'root')) {
+	goto label180;
+}
+
+exit('Please run as root!' . "\n");
+
+label180:
+
+set_time_limit(0);
+
+if (@$argc) {
+	goto label3035;
+}
+
+goto label3034;
+
+label189:
+
+XUI::$db->query('SHOW COLUMNS FROM `lines` LIKE \'last_activity_array\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label204;
+}
+
+XUI::$db->query('ALTER TABLE `lines` ADD COLUMN `last_activity_array` MEDIUMTEXT NULL DEFAULT NULL;');
+
+label204:
+
+goto label2485;
+
+label205:
+
+XUI::$db->query('ALTER TABLE `settings` DROP COLUMN `confirm_source`;');
+
+label209:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'custom_ip_header\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4905;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `custom_ip_header` VARCHAR(256) NULL DEFAULT \'\';');
+goto label4905;
+
+label225:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'player_allow_bouquet\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label240;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `player_allow_bouquet` TINYINT(1) NULL DEFAULT \'1\';');
+
+label240:
+
+goto label1293;
+
+label241:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `alternative_titles` TINYINT(1) NULL DEFAULT \'0\';');
+
+label245:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'search_items\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3042;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `search_items` INT(3) NULL DEFAULT \'20\';');
+goto label3042;
+
+label261:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `max_simultaneous_downloads` TINYINT(4) NULL DEFAULT \'2\';');
+
+label265:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'restart_php_fpm\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2728;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `restart_php_fpm` TINYINT(4) NULL DEFAULT \'1\';');
+goto label2728;
+
+label281:
+
+XUI::$db->query('INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 1, \'Action\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 2, \'Action / Adventure\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 3, \'Adventure\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 4, \'Animation\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 5, \'Anime\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 6, \'Biography\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 7, \'Children\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 8, \'Comedy\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 9, \'Crime\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 10, \'Documentary\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 11, \'Drama\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 12, \'Family\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 13, \'Fantasy\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 14, \'History\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 15, \'Horror\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 16, \'Martial Arts\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 17, \'Music\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 18, \'Musical\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 19, \'Mystery\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 20, \'News\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 21, \'Non-Fiction\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 22, \'Reality\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 23, \'Romance\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 24, \'Science Fiction\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 25, \'Short\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 26, \'Sport\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 27, \'Talk Show\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 28, \'Thriller\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 29, \'TV Movie\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 30, \'War\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (3, 31, \'Western\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 1, \'Action\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 2, \'Action & Adventure\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 3, \'Adventure\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 4, \'Animation\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 5, \'Anime\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 6, \'Biography\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 7, \'Children\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 8, \'Comedy\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 9, \'Crime\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 10, \'Documentary\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 11, \'Drama\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 12, \'Family\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 13, \'Fantasy\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 14, \'Food\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 15, \'Game Show\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 16, \'History\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 17, \'Home and Garden\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 18, \'Horror\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 19, \'Indie\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 20, \'Martial Arts\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 21, \'Mini-Series\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 22, \'Musical\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 23, \'Mystery\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 24, \'News\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 25, \'Reality\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 26, \'Romance\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 27, \'Science Fiction\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 28, \'Sci-Fi & Fantasy\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 29, \'Soap\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 30, \'Special Interest\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 31, \'Sport\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 32, \'Suspense\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 33, \'Talk\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 34, \'Talk Show\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 35, \'Thriller\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 36, \'Thriller\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 37, \'Travel\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 38, \'War\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 39, \'War & Politics\', 0, \'[]\'); INSERT INTO `watch_categories` (`type`, `genre_id`, `genre`, `category_id`, `bouquets`) VALUES (4, 40, \'Western\', 0, \'[]\');');
+
+label285:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'segment_type\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3073;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `segment_type` TINYINT(1) NULL DEFAULT \'1\';');
+goto label3073;
+
+label301:
+
+$C455840d1f015c68 = range(0, $d353a4da8a0bb857, 1000);
+
+if ($C455840d1f015c68) {
+	goto label310;
+}
+
+$C455840d1f015c68 = [0];
+
+label310:
+
+foreach ($C455840d1f015c68 as $Feb130957c9ca68a) {
+	try {
+		XUI::$db->query('SELECT * FROM `lines_output` LIMIT ' . $Feb130957c9ca68a . ', 1000;');
+		$e02ff34f7d898a7b = XUI::$db->get_rows();
+
+		foreach ($e02ff34f7d898a7b as $D577b2a7889a5fb6) {
+			$d094d3e133ec8c03[$D577b2a7889a5fb6['user_id']][] = $D577b2a7889a5fb6['access_output_id'];
+		}
+	}
+	catch (Exception $E0f0519e12b13b6b) {
+	}
+}
+
+goto label4313;
+
+label336:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `queue_loop` INT(11) NULL DEFAULT \'1\';');
+
+label340:
+
+XUI::$db->query('SHOW COLUMNS FROM `watch_folders` LIKE \'check_tmdb\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1876;
+}
+
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `check_tmdb` TINYINT(1) NULL DEFAULT \'1\';');
+goto label1876;
+
+label356:
+
+XUI::$db->query('CREATE TABLE IF NOT EXISTS `queue` (`id` INT(11) NOT NULL AUTO_INCREMENT, `type` VARCHAR(32) NULL DEFAULT NULL, `server_id` INT(11) NULL DEFAULT NULL, `stream_id` INT(11) NULL DEFAULT NULL, `pid` INT(11) NULL DEFAULT NULL, `added` INT(11) NULL DEFAULT NULL, PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=1;');
+XUI::$db->query('CREATE TABLE IF NOT EXISTS `lines_divergence` (`id` INT(11) NOT NULL AUTO_INCREMENT, `uuid` VARCHAR(32) NULL DEFAULT NULL, `divergence` FLOAT NULL DEFAULT NULL, PRIMARY KEY (`id`) USING BTREE, UNIQUE INDEX `uuid` (`uuid`) USING BTREE) ENGINE=InnoDB;');
+XUI::$db->query('CREATE TABLE IF NOT EXISTS `ondemand_check` (`id` INT(11) NOT NULL AUTO_INCREMENT, `stream_id` INT(11) NULL DEFAULT NULL, `server_id` INT(11) NULL DEFAULT NULL, `status` INT(1) NULL DEFAULT NULL, `source_id` INT(4) NULL DEFAULT NULL, `source_url` VARCHAR(1024) NULL DEFAULT NULL, `video_codec` VARCHAR(50) NULL DEFAULT NULL, `audio_codec` VARCHAR(50) NULL DEFAULT NULL, `resolution` VARCHAR(50) NULL DEFAULT NULL, `response` INT(11) NULL DEFAULT NULL, `fps` INT(11) NULL DEFAULT NULL, `errors` MEDIUMTEXT NULL DEFAULT NULL, `date` INT(11) NULL DEFAULT NULL, PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=1;');
+XUI::$db->query('CREATE TABLE IF NOT EXISTS `recordings` (`id` INT(11) NOT NULL AUTO_INCREMENT, `stream_id` INT(11) NULL DEFAULT NULL, `created_id` INT(11) NULL DEFAULT NULL, `category_id` LONGTEXT NULL DEFAULT NULL, `bouquets` LONGTEXT NULL DEFAULT NULL, `title` MEDIUMTEXT NULL DEFAULT NULL, `description` MEDIUMTEXT NULL DEFAULT NULL, `stream_icon` MEDIUMTEXT NULL DEFAULT NULL, `start` INT(11) NULL DEFAULT NULL, `end` INT(11) NULL DEFAULT NULL, `source_id` INT(11) NULL DEFAULT NULL, `archive` INT(11) NULL DEFAULT NULL, `status` TINYINT(1) NULL DEFAULT \'0\', PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=1;');
+XUI::$db->query('UPDATE `streams_servers` SET `parent_id` = NULL WHERE `parent_id` = 0;');
+goto label2744;
+
+label377:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label388;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `redis_password` VARCHAR(512) NULL DEFAULT \'\';');
+
+label388:
+
+XUI::$db->query('SHOW COLUMNS FROM `lines_live` LIKE \'uuid\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label625;
+}
+
+goto label621;
+
+label400:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label411;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `show_category_duplicates` TINYINT(1) NULL DEFAULT \'0\';');
+
+label411:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'probe_extra_wait\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label5069;
+}
+
+goto label5065;
+
+label423:
+
+shell_exec('sudo chmod 0771 ' . XUI_HOME . 'bin/daemons.sh');
+shell_exec('sudo chmod 0775 ' . XUI_HOME . 'bin/certbot');
+shell_exec('sudo chmod 0770 ' . XUI_HOME . 'config/license');
+shell_exec('sudo chown -R xui:xui ' . XUI_HOME . 'config');
+shell_exec('sudo echo \'net.ipv4.ip_unprivileged_port_start=0\' > /etc/sysctl.d/50-allports-nonroot.conf && sudo sysctl --system 2> /dev/null');
+goto label1188;
+
+label451:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label462;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `mysql_sleep_kill` INT(11) NULL DEFAULT \'21600\';');
+
+label462:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'reissues\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3709;
+}
+
+goto label3705;
+
+label474:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'probesize_ondemand\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label489;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `probesize_ondemand` INT(11) NULL DEFAULT \'256000\';');
+
+label489:
+
+goto label1674;
+
+label490:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `connection_sync_timer` INT(11) NULL DEFAULT \'1\';');
+
+label494:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'connections\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2655;
+}
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `connections` INT(16) NULL DEFAULT \'0\';');
+goto label2655;
+
+label510:
+
+unlink('/etc/init.d/xuione');
+shell_exec('sudo systemctl daemon-reload');
+
+label516:
+
+if (!file_exists(XUI_HOME . 'includes/nhandler.php')) {
+	goto label1014;
+}
+
+unlink(XUI_HOME . 'includes/nhandler.php');
+goto label1014;
+
+label530:
+
+echo 'Connected successfully.' . "\n\n";
+goto label1908;
+
+label532:
+
+echo 'Couldn\'t connect to database using credentials. Please add them to config.ini.' . "\n\n";
+exit();
+goto label1908;
+
+label535:
+
+if (file_exists(XUI_HOME . 'bin/nginx/conf/custom.conf')) {
+	goto label553;
+}
+
+touch(XUI_HOME . 'bin/nginx/conf/custom.conf');
+chown(XUI_HOME . 'bin/nginx/conf/custom.conf', 'xui');
+
+label553:
+
+goto label3615;
+
+label554:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'create_expiration\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label569;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `create_expiration` TINYINT(3) NULL DEFAULT \'5\';');
+
+label569:
+
+goto label3595;
+
+label570:
+
+if (!$af4a3f6194eb59c9) {
+	goto label579;
+}
+
+file_put_contents(XUI_HOME . 'bin/redis/redis.conf', $a998abd856b07a59);
+
+label579:
+
+XUI::$db->query('SELECT `redis_password` FROM `settings`;');
+goto label3877;
+
+label584:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'fps_check_type\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label599;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `fps_check_type` TINYINT(1) NULL DEFAULT \'1\';');
+
+label599:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'show_category_duplicates\';');
+goto label400;
+
+label604:
+
+XUI::$db->query('UPDATE `epg_api` SET `picon` = REPLACE(`picon`, \'://fanc.tmsimg.com\', \'://www.tmsimg.com\');');
+
+label608:
+
+XUI::$db->query('UPDATE `output_devices` SET `device_header` = REPLACE(`device_header`, \' reboot;\', \'\') WHERE `device_filename` = \'iptv.sh\' AND `device_header` LIKE \'%reboot;\';');
+XUI::$db->query('CREATE TABLE IF NOT EXISTS `providers` (`id` INT(11) NOT NULL AUTO_INCREMENT, `name` VARCHAR(128) NULL DEFAULT NULL, `ip` VARCHAR(128) NULL DEFAULT NULL, `port` INT(5) NULL DEFAULT \'80\', `username` VARCHAR(128) NULL DEFAULT NULL, `password` VARCHAR(128) NULL DEFAULT NULL, `data` MEDIUMTEXT NULL DEFAULT NULL, `last_changed` INT(11) NULL DEFAULT NULL, `legacy` TINYINT(1) NULL DEFAULT \'0\', `enabled` TINYINT(1) NULL DEFAULT \'1\', `status` TINYINT(1) NULL DEFAULT \'0\', `ssl` TINYINT(1) NULL DEFAULT \'0\', `hls` TINYINT(1) NULL DEFAULT \'0\', PRIMARY KEY (`id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=1;');
+XUI::$db->query('CREATE TABLE IF NOT EXISTS `providers_streams` (`id` INT(11) NOT NULL AUTO_INCREMENT, `type` VARCHAR(16) NULL DEFAULT NULL, `provider_id` INT(11) NULL DEFAULT NULL, `stream_id` INT(11) NULL DEFAULT NULL, `category_id` MEDIUMTEXT NULL DEFAULT NULL, `category_array` MEDIUMTEXT NULL DEFAULT NULL, `stream_display_name` MEDIUMTEXT NULL DEFAULT NULL, `stream_icon` MEDIUMTEXT NULL DEFAULT NULL, `channel_id` VARCHAR(255) NULL DEFAULT NULL, `added` INT(11) NULL DEFAULT NULL, `modified` INT(11) NULL DEFAULT NULL, PRIMARY KEY (`id`) USING BTREE, INDEX `channel_id` (`channel_id`) USING BTREE) ENGINE=InnoDB AUTO_INCREMENT=1;');
+goto label356;
+
+label621:
+
+XUI::$db->query('ALTER TABLE `lines_live` ADD COLUMN `uuid` VARCHAR(32) NULL DEFAULT NULL, ADD INDEX `uuid` (`uuid`);');
+
+label625:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams` LIKE \'uuid\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1378;
+}
+
+XUI::$db->query('ALTER TABLE `streams` ADD COLUMN `uuid` VARCHAR(32) NULL DEFAULT NULL, ADD INDEX `uuid` (`uuid`);');
+goto label1378;
+
+label641:
+
+foreach (XUI::$db->get_rows() as $Fb9da1713bff19ce) {
+	$a2442da801f46da6 = file_exists(XUI_HOME . 'bin/nginx/conf/codes/' . $Fb9da1713bff19ce['code'] . '.conf');
+
+	if (!$a2442da801f46da6) {
+		goto label661;
+	}
+
+	$db07add3638d36e3++;
+
+	label661:
+
+	echo $Bcf70cba56392975[SERVER_ID]['site_url'] . $Fb9da1713bff19ce['code'] . '/' . "\n";
+}
+
+if ($db07add3638d36e3 == 0) {
+	goto label4460;
+}
+
+echo "\n";
+goto label4461;
+goto label4460;
+
+label676:
+
+XUI::$db->query('DELETE FROM `crontab` WHERE `filename` = \'detect_restream.php\';');
+unlink(XUI_HOME . 'tmp/crontab');
+
+label685:
+
+XUI::$db->query('SELECT * FROM `crontab` WHERE `filename` = \'cache_engine.php\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label60;
+}
+
+goto label51;
+
+label697:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label708;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `send_server_header` VARCHAR(256) NULL DEFAULT \'\';');
+
+label708:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'send_unique_header\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4215;
+}
+
+goto label4211;
+
+label720:
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `limit_burst` INT(11) NULL DEFAULT \'0\';');
+
+label724:
+
+XUI::$db->query('SELECT `DATA_TYPE` FROM INFORMATION_SCHEMA.COLUMNS WHERE `TABLE_SCHEMA` = \'xui\' AND `TABLE_NAME` = \'servers\' AND `COLUMN_NAME` = \'parent_id\';');
+
+if (!(0 < XUI::$db->num_rows())) {
+	goto label3826;
+}
+
+if (!(XUI::$db->get_row()['DATA_TYPE'] != 'varchar')) {
+	goto label3826;
+}
+
+goto label3822;
+
+label744:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label759;
+}
+
+XUI::$db->query('ALTER TABLE `streams_servers` ADD COLUMN `updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;');
+XUI::$db->query('UPDATE `streams_servers` SET `updated` = CURRENT_TIMESTAMP;');
+
+label759:
+
+XUI::$db->query('SHOW COLUMNS FROM `lines` LIKE \'updated\';');
+goto label17;
+
+label764:
+
+unlink(XUI_HOME . 'includes/cli/closed_cons.php');
+
+label769:
+
+if (!file_exists(XUI_HOME . 'includes/cli/connection_sync.php')) {
+	goto label782;
+}
+
+unlink(XUI_HOME . 'includes/cli/connection_sync.php');
+
+label782:
+
+goto label5167;
+
+label783:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'on_demand_scan_keep\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label798;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `on_demand_scan_keep` INT(16) NULL DEFAULT \'604800\';');
+
+label798:
+
+goto label4953;
+
+label799:
+
+XUI::$db->query('ALTER TABLE `lines` ADD COLUMN `allowed_outputs` MEDIUMTEXT NULL DEFAULT NULL AFTER `bouquet`;');
+
+label803:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'check_connections\';');
+
+if (!(0 < XUI::$db->num_rows())) {
+	goto label2208;
+}
+
+XUI::$db->query('ALTER TABLE `settings` DROP COLUMN `check_connections`;');
+goto label2208;
+
+label819:
+
+unlink(XUI_HOME . 'bin/nginx/conf/ip_cdn.conf');
+
+label824:
+
+if (!file_exists(XUI_HOME . 'bin/nginx/conf/ip_cloudflare.conf')) {
+	goto label837;
+}
+
+unlink(XUI_HOME . 'bin/nginx/conf/ip_cloudflare.conf');
+
+label837:
+
+goto label2357;
+
+label838:
+
+error_reporting(32767);
+
+if (!$aa7ca17b42be6668) {
+	goto label1489;
+}
+
+goto label1487;
+
+label848:
+
+XUI::$db->query('SHOW COLUMNS FROM `watch_folders` LIKE \'direct_proxy\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label863;
+}
+
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `direct_proxy` TINYINT(1) NULL DEFAULT \'0\';');
+
+label863:
+
+XUI::$db->query('SHOW COLUMNS FROM `watch_folders` LIKE \'plex_token\';');
+goto label1792;
+
+label868:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `mag_legacy_redirect` TINYINT(4) NULL DEFAULT \'0\';');
+
+label872:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'save_login_logs\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4339;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `save_login_logs` TINYINT(4) NULL DEFAULT \'1\';');
+goto label4339;
+
+label888:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'ffmpeg_gpu\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label903;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `ffmpeg_gpu` VARCHAR(8) NULL DEFAULT \'4.0\';');
+
+label903:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'php_version\';');
+goto label1086;
+
+label908:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label919;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `max_encode_cc` INT(11) NULL DEFAULT \'1\';');
+
+label919:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'queue_loop\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label340;
+}
+
+goto label336;
+
+label931:
+
+XUI::$db->query('ALTER TABLE `users` CHANGE COLUMN `api_key` `api_key` VARCHAR(64) NULL DEFAULT NULL;');
+XUI::$db->query('ALTER TABLE `watch_categories` CHANGE COLUMN `genre` `genre` VARCHAR(64) NULL DEFAULT NULL;');
+XUI::$db->query('ALTER TABLE `watch_folders` CHANGE COLUMN `type` `type` VARCHAR(32) NULL DEFAULT NULL, CHANGE COLUMN `directory` `directory` VARCHAR(2048) NULL DEFAULT NULL, CHANGE COLUMN `rclone_dir` `rclone_dir` VARCHAR(2048) NULL DEFAULT NULL;');
+XUI::$db->query('ALTER TABLE `watch_logs` CHANGE COLUMN `filename` `filename` VARCHAR(4096) NULL DEFAULT NULL;');
+XUI::$db->query('ALTER TABLE `mag_devices` CHANGE COLUMN `token` `token` VARCHAR(32) NULL DEFAULT NULL;');
+goto label1737;
+
+label952:
+
+$a998abd856b07a59 .= "\n" . 'save 60 1000';
+$a998abd856b07a59 = str_replace('stop-writes-on-bgsave-error yes', 'stop-writes-on-bgsave-error no', $a998abd856b07a59);
+echo 'Turning Redis Snapshots On!' . "\n\n";
+
+label960:
+
+if (!(stripos($a998abd856b07a59, "\n" . 'save 60 1000') === false)) {
+	goto label2573;
+}
+
+goto label2570;
+
+label969:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label980;
+}
+
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `target_container` VARCHAR(64) NULL DEFAULT NULL;');
+
+label980:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'total_users\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2895;
+}
+
+goto label2891;
+
+label992:
+
+if (!file_exists(CRON_PATH . 'root_mysql.php')) {
+	goto label1008;
+}
+
+$F7f0e6a3ea460ca8[] = '* * * * * ' . PHP_BIN . ' ' . CRON_PATH . 'root_mysql.php # XUI';
+
+label1008:
+
+$af4a3f6194eb59c9 = false;
+exec('sudo crontab -l', $d094d3e133ec8c03);
+goto label2452;
+
+label1014:
+
+if (!file_exists(XUI_HOME . 'includes/handler.php')) {
+	goto label1027;
+}
+
+unlink(XUI_HOME . 'includes/handler.php');
+
+label1027:
+
+if (!file_exists(XUI_HOME . 'includes/cli/closed_cons.php')) {
+	goto label769;
+}
+
+goto label764;
+
+label1036:
+
+$D6be258a9043b749 = file('/etc/systemd/system.conf');
+$F2b2917e716db4d0 = false;
+$C7ee8fa4c1e78264 = false;
+$df6991d59f367c7e = 0;
+goto label4294;
+
+label1044:
+
+XUI::$db->query('ALTER TABLE `enigma2_devices` CHANGE COLUMN `public_ip` `public_ip` VARCHAR(255) NULL DEFAULT NULL COLLATE \'utf8_general_ci\';');
+XUI::$db->query('ALTER TABLE `lines` ADD FULLTEXT INDEX `search` (`username`, `admin_notes`, `reseller_notes`, `last_ip`, `contact`);');
+XUI::$db->query('ALTER TABLE `streams` ADD FULLTEXT INDEX `search` (`stream_display_name`, `stream_source`, `notes`, `channel_id`);');
+XUI::$db->query('ALTER TABLE `streams_series` ADD FULLTEXT INDEX `search` (`title`, `plot`, `cast`, `director`);');
+XUI::$db->query('ALTER TABLE `mag_devices` ADD FULLTEXT INDEX `search` (`mac_filter`, `ip`);');
+goto label3578;
+
+label1065:
+
+$aa7ca17b42be6668 = true;
+
+label1066:
+
+require str_replace('\\', '/', dirname($argv[0])) . '/www/stream/init.php';
+ini_set('display_startup_errors', 1);
+ini_set('display_errors', 1);
+goto label838;
+
+label1086:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4937;
+}
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `php_version` INT(2) NULL DEFAULT \'74\';');
+XUI::$db->query('UPDATE `servers` SET `network_interface` = \'auto\';');
+XUI::$db->query('SELECT `id`, `movie_properties`, `rating`, `tmdb_id` FROM `streams` WHERE `type` = 2;');
+
+foreach (XUI::$db->get_rows() as $Fb9da1713bff19ce) {
+	$Ccbdf03f8a4df633 = json_decode($Fb9da1713bff19ce['movie_properties'], true);
+	$Ad59eff1763511c9 = floatval($Ccbdf03f8a4df633['rating']) ?: 0;
+	$D7f17b03d6498825 = $Ccbdf03f8a4df633['tmdb_id'] ?: NULL;
+	if (!(($Fb9da1713bff19ce['rating'] != $Ad59eff1763511c9) || ($Fb9da1713bff19ce['tmdb_id'] != $D7f17b03d6498825))) {
+		goto label1145;
+	}
+
+	XUI::$db->query('UPDATE `streams` SET `rating` = ?, `tmdb_id` = ? WHERE `id` = ?;', $Ad59eff1763511c9, $D7f17b03d6498825, $Fb9da1713bff19ce['id']);
+
+	label1145:
+}
+
+goto label4937;
+
+label1148:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1159;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `ip_subnet_match` TINYINT(4) NULL DEFAULT \'0\';');
+
+label1159:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'last_cache\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4866;
+}
+
+goto label4862;
+
+label1171:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'enable_search\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3590;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `enable_search` TINYINT(4) NULL DEFAULT \'1\';');
+echo "\n" . 'Building search indexes...' . "\n";
+goto label1044;
+
+label1188:
+
+$db954b3657036de1 = file_get_contents(XUI_HOME . 'bin/nginx/conf/ssl.conf');
+if (!((stripos($db954b3657036de1, "\n" . 'ssl_stapling on;' . "\n" . 'ssl_stapling_verify on;') !== false) || (stripos($db954b3657036de1, "\r\n" . 'ssl_stapling on;' . "\r\n" . 'ssl_stapling_verify on;') !== false))) {
+	goto label1226;
+}
+
+file_put_contents(XUI_HOME . 'bin/nginx/conf/ssl.conf', str_replace("\r\n" . 'ssl_stapling on;' . "\r\n" . 'ssl_stapling_verify on;', '', str_replace("\n" . 'ssl_stapling on;' . "\n" . 'ssl_stapling_verify on;', '', $db954b3657036de1)));
+$b0663135b9a59341 = true;
+
+label1226:
+
+goto label2384;
+
+label1227:
+
+echo 'XUI is not running.' . "\n\n";
+goto label1230;
+
+label1229:
+
+echo 'XUI is running.' . "\n\n";
+
+label1230:
+
+goto label4176;
+
+label1231:
+
+if ($Ac6558eb5dedaf7e == 0) {
+	goto label1236;
+}
+
+echo "\n";
+goto label3150;
+
+label1236:
+
+goto label3149;
+
+label1237:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `on_demand_scan_time` INT(16) NULL DEFAULT \'3600\';');
+
+label1241:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'on_demand_max_probe\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label783;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `on_demand_max_probe` INT(16) NULL DEFAULT \'5\';');
+goto label783;
+
+label1257:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1272;
+}
+
+XUI::$db->query('ALTER TABLE `streams` ADD COLUMN `updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;');
+XUI::$db->query('UPDATE `streams` SET `updated` = CURRENT_TIMESTAMP;');
+
+label1272:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams_servers` LIKE \'updated\';');
+goto label744;
+
+label1277:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'fps_delay\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1292;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `fps_delay` INT(11) NULL DEFAULT \'600\';');
+
+label1292:
+
+goto label584;
+
+label1293:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'player_hide_incompatible\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1308;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `player_hide_incompatible` TINYINT(1) NULL DEFAULT \'0\';');
+
+label1308:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'player_allow_hevc\';');
+goto label5006;
+
+label1313:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1324;
+}
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `limit_requests` INT(11) NULL DEFAULT \'0\';');
+
+label1324:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'limit_burst\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label724;
+}
+
+goto label720;
+
+label1336:
+
+if (!file_exists(XUI_HOME . 'bin/nginx/conf/cloudflare_ip')) {
+	goto label1349;
+}
+
+unlink(XUI_HOME . 'bin/nginx/conf/cloudflare_ip');
+
+label1349:
+
+if (!file_exists(XUI_HOME . 'bin/nginx/conf/ip_cdn.conf')) {
+	goto label824;
+}
+
+goto label819;
+
+label1358:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams_servers` LIKE \'video_codec\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1373;
+}
+
+XUI::$db->query('ALTER TABLE `streams_servers` ADD COLUMN `video_codec` VARCHAR(64) NULL DEFAULT NULL;');
+
+label1373:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams_servers` LIKE \'resolution\';');
+goto label1972;
+
+label1378:
+
+XUI::$db->query('SHOW COLUMNS FROM `watch_folders` LIKE \'fallback_movie\';');
+
+if (!(XUI::$db->num_rows() == 1)) {
+	goto label1393;
+}
+
+XUI::$db->query('ALTER TABLE `watch_folders` DROP COLUMN `fallback_movie`;');
+
+label1393:
+
+goto label4088;
+
+label1394:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1405;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `on_demand_checker` TINYINT(1) NULL DEFAULT \'0\';');
+
+label1405:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'on_demand_scan_time\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1241;
+}
+
+goto label1237;
+
+label1417:
+
+shell_exec('sudo echo "' . "\n" . 'DefaultLimitNOFILESoft=1048576" >> "/etc/systemd/system.conf"');
+shell_exec('sudo echo "' . "\n" . 'DefaultLimitNOFILESoft=1048576" >> "/etc/systemd/user.conf"');
+
+label1423:
+
+if (!file_exists('/etc/init.d/xuione')) {
+	goto label516;
+}
+
+goto label510;
+
+label1430:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'max_items\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1445;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `max_items` INT(11) NULL DEFAULT \'0\';');
+
+label1445:
+
+goto label2164;
+
+label1446:
+
+XUI::$db->query('INSERT INTO `crontab` (`filename`, `time`, `enabled`) VALUES (\'providers.php\', \'0 * * * *\', 1);');
+unlink(XUI_HOME . 'tmp/crontab');
+
+label1455:
+
+XUI::$db->query('SELECT * FROM `crontab` WHERE `filename` = \'redis_cache.php\';');
+
+if (!(XUI::$db->num_rows() == 1)) {
+	goto label4013;
+}
+
+goto label4004;
+
+label1467:
+
+$af4a3f6194eb59c9 = true;
+$a998abd856b07a59 .= "\n" . 'server-threads 4' . "\n" . 'server-thread-affinity true';
+echo 'Enabling multithreading on Redis' . "\n\n";
+
+label1470:
+
+$fd093b5358e9a519 = trim(explode("\n", explode("\n" . 'requirepass ', $a998abd856b07a59)[1])[0]);
+goto label1495;
+
+label1487:
+
+echo "\n";
+goto label4176;
+
+label1489:
+
+echo "\n" . 'Status' . "\n" . '------------------------------' . "\n";
+
+if (ed28cb44bc386d46()) {
+	goto label1229;
+}
+
+goto label1227;
+
+label1495:
+
+if (!($fd093b5358e9a519 == '#PASSWORD#')) {
+	goto label570;
+}
+
+$af4a3f6194eb59c9 = true;
+$fd093b5358e9a519 = fc34407b2842461b(512);
+$a998abd856b07a59 = str_replace('#PASSWORD#', $fd093b5358e9a519, $a998abd856b07a59);
+echo 'Generating a new Redis password' . "\n\n";
+goto label570;
+
+label1512:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'block_streaming_servers\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1527;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `block_streaming_servers` TINYINT(4) NULL DEFAULT \'0\';');
+
+label1527:
+
+goto label3685;
+
+label1528:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'on_demand_failure_exit\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1543;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `on_demand_failure_exit` TINYINT(4) NULL DEFAULT \'0\';');
+
+label1543:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'on_demand_wait_time\';');
+goto label3854;
+
+label1548:
+
+if (!file_exists(XUI_HOME . 'bin/nginx/conf/cloudflare.conf')) {
+	goto label1561;
+}
+
+unlink(XUI_HOME . 'bin/nginx/conf/cloudflare.conf');
+
+label1561:
+
+if (!file_exists(XUI_HOME . 'bin/nginx/conf/blacklist.conf')) {
+	goto label1336;
+}
+
+unlink(XUI_HOME . 'bin/nginx/conf/blacklist.conf');
+goto label1336;
+
+label1575:
+
+XUI::$db->query('ALTER TABLE `streams` ADD COLUMN `adaptive_link` MEDIUMTEXT NULL DEFAULT NULL;');
+
+label1579:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams` LIKE \'title_sync\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2081;
+}
+
+XUI::$db->query('ALTER TABLE `streams` ADD COLUMN `title_sync` VARCHAR(64) NULL DEFAULT NULL;');
+goto label2081;
+
+label1595:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams` LIKE \'epg_offset\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1610;
+}
+
+XUI::$db->query('ALTER TABLE `streams` ADD COLUMN `epg_offset` INT(11) NULL DEFAULT \'0\';');
+
+label1610:
+
+goto label129;
+
+label1611:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `threshold_mem` TINYINT(3) NULL DEFAULT \'67\';');
+
+label1615:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'threshold_disk\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2789;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `threshold_disk` TINYINT(3) NULL DEFAULT \'67\';');
+goto label2789;
+
+label1631:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1642;
+}
+
+XUI::$db->query('ALTER TABLE `users_groups` ADD COLUMN `allow_change_bouquets` TINYINT(1) NULL DEFAULT \'0\';');
+
+label1642:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'reseller_ssl_domain\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3988;
+}
+
+goto label3984;
+
+label1654:
+
+XUI::$db->query('ALTER TABLE `streams` ADD COLUMN `rating` FLOAT(8) NOT NULL DEFAULT \'0\';');
+
+label1658:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams_series` LIKE \'year\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4639;
+}
+
+XUI::$db->query('ALTER TABLE `streams_series` ADD COLUMN `year` INT(4) NULL DEFAULT NULL;');
+goto label4639;
+
+label1674:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'ffmpeg_warnings\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1689;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `ffmpeg_warnings` INT(11) NULL DEFAULT \'1\';');
+
+label1689:
+
+XUI::$db->query('SHOW COLUMNS FROM `mag_devices` LIKE \'theme_type\';');
+goto label4882;
+
+label1694:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1705;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `force_epg_timezone` TINYINT(1) NULL DEFAULT \'0\';');
+
+label1705:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'check_vod\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3411;
+}
+
+goto label3407;
+
+label1717:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'enable_gzip\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1732;
+}
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `enable_gzip` TINYINT(1) NULL DEFAULT \'0\';');
+
+label1732:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'limit_requests\';');
+goto label1313;
+
+label1737:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'seg_delete_threshold\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1752;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `seg_delete_threshold` INT(11) NULL DEFAULT \'4\';');
+
+label1752:
+
+goto label3725;
+
+label1753:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1764;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `stream_fail_sleep` TINYINT(4) NULL DEFAULT \'10\';');
+
+label1764:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'confirm_source\';');
+
+if (!(XUI::$db->num_rows() == 1)) {
+	goto label209;
+}
+
+goto label205;
+
+label1776:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'order\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1791;
+}
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `order` INT(11) NULL DEFAULT NULL;');
+
+label1791:
+
+goto label2688;
+
+label1792:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1803;
+}
+
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `plex_token` VARCHAR(512) NULL DEFAULT NULL;');
+
+label1803:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'status_uuid\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4981;
+}
+
+goto label2862;
+
+label1815:
+
+if ($a998abd856b07a59['license']) {
+	goto label1820;
+}
+
+echo 'No license key in configuration file. Please add it to config.ini and try again.' . "\n\n";
+goto label2788;
+
+label1820:
+
+$e5bebfb39a19fe80 = intval(explode(';', explode(' ', trim(explode('listen ', file_get_contents(XUI_HOME . 'bin/nginx/conf/ports/http.conf'))[1]))[0])[0]) ?: 8080;
+goto label37;
+
+label1853:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1864;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `keep_client` INT(11) NULL DEFAULT \'0\';');
+
+label1864:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'keep_login\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2983;
+}
+
+goto label2979;
+
+label1876:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'cache_thread_count\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1891;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `cache_thread_count` INT(4) NULL DEFAULT \'4\';');
+
+label1891:
+
+goto label3665;
+
+label1892:
+
+XUI::$db->query('SHOW INDEXES IN `lines` WHERE `Key_name` = \'order_default\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1907;
+}
+
+XUI::$db->query('CREATE INDEX `order_default` ON `lines` (`id`, `is_mag`, `is_e2`);');
+
+label1907:
+
+goto label1717;
+
+label1908:
+
+$Bcf70cba56392975 = f37a94a42de0b72a();
+if (!(ed28cb44bc386d46() && $Bcf70cba56392975[SERVER_ID]['is_main'])) {
+	goto label3277;
+}
+
+echo 'License' . "\n" . '------------------------------' . "\n";
+$a998abd856b07a59 = parse_ini_string(file_get_contents(XUI_HOME . 'config/config.ini'));
+goto label1815;
+
+label1932:
+
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `duplicate_tmdb` TINYINT(1) NULL DEFAULT \'0\';');
+
+label1936:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'redirect_timeout\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label554;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `redirect_timeout` TINYINT(1) NULL DEFAULT \'5\';');
+goto label554;
+
+label1952:
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `governor` VARCHAR(512) NULL DEFAULT NULL;');
+
+label1956:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'sysctl\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1776;
+}
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `sysctl` MEDIUMTEXT NULL DEFAULT NULL;');
+goto label1776;
+
+label1972:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1983;
+}
+
+XUI::$db->query('ALTER TABLE `streams_servers` ADD COLUMN `resolution` INT(5) NULL DEFAULT NULL;');
+
+label1983:
+
+XUI::$db->query('SHOW COLUMNS FROM `providers_streams` LIKE \'type\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label5033;
+}
+
+goto label5029;
+
+label1995:
+
+XUI::$db->query('ALTER TABLE `streams` ADD COLUMN `fps_restart` TINYINT(1) NULL DEFAULT \'0\';');
+
+label1999:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams` LIKE \'fps_threshold\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1277;
+}
+
+XUI::$db->query('ALTER TABLE `streams` ADD COLUMN `fps_threshold` INT(11) NULL DEFAULT \'90\';');
+goto label1277;
+
+label2015:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2026;
+}
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `php_pids` LONGTEXT NULL DEFAULT NULL;');
+
+label2026:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'connection_sync_timer\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label494;
+}
+
+goto label490;
+
+label2038:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'show_connected_video\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2053;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `show_connected_video` TINYINT(1) NULL DEFAULT \'1\';');
+
+label2053:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'connected_video_path\';');
+goto label3089;
+
+label2058:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2069;
+}
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `ping` INT(11) NULL DEFAULT \'0\';');
+
+label2069:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'requests_per_second\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2297;
+}
+
+goto label2293;
+
+label2081:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'mag_message\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4731;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `mag_message` MEDIUMTEXT NULL DEFAULT \'\';');
+XUI::$db->query('UPDATE `settings` SET `mag_message` = \'You can switch between the modern and legacy themes by using the <span class="label">Green</span> and <span class="label">Yellow</span> buttons on your remote control. Doing so will restart your device.\';');
+goto label4731;
+
+label2101:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'enable_redis\';');
+
+if (!(XUI::$db->num_rows() == 1)) {
+	goto label2116;
+}
+
+XUI::$db->query('ALTER TABLE `settings` DROP COLUMN `enable_redis`;');
+
+label2116:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'enable_cache\';');
+goto label4596;
+
+label2121:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'threshold_clients\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2136;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `threshold_clients` TINYINT(3) NULL DEFAULT \'67\';');
+
+label2136:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'auth_flood_seconds\';');
+goto label2825;
+
+label2141:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2152;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `thread_count_show` TINYINT(3) NULL DEFAULT \'1\';');
+
+label2152:
+
+XUI::$db->query('SHOW COLUMNS FROM `watch_folders` LIKE \'duplicate_tmdb\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1936;
+}
+
+goto label1932;
+
+label2164:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'restrict_playlists\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2179;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `restrict_playlists` TINYINT(4) NULL DEFAULT \'1\';');
+
+label2179:
+
+if (!file_exists(XUI_HOME . 'bin/nginx/conf/codes/c.conf')) {
+	goto label3029;
+}
+
+goto label3019;
+
+label2188:
+
+XUI::$db->query('SHOW COLUMNS FROM `watch_folders` LIKE \'fallback_title\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2203;
+}
+
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `fallback_title` TINYINT(4) NULL DEFAULT \'0\';');
+
+label2203:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'ignore_keyframes\';');
+goto label4474;
+
+label2208:
+
+XUI::$db->query('SHOW COLUMNS FROM `users` LIKE \'api_key\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2223;
+}
+
+XUI::$db->query('ALTER TABLE `users` ADD COLUMN `api_key` VARCHAR(64) NULL DEFAULT \'\';');
+
+label2223:
+
+goto label3371;
+
+label2224:
+if (!(!$aa7ca17b42be6668 && $Bcf70cba56392975[SERVER_ID]['is_main'])) {
+	goto label3150;
+}
+
+XUI::$db->query('UPDATE `servers` SET `is_main` = 0 WHERE `id` <> ?;', SERVER_ID);
+XUI::$db->query('UPDATE `servers` SET `is_main` = 1 WHERE `id` = ?;', SERVER_ID);
+XUI::$db->query('UPDATE `settings` SET `status_uuid` = ?;', md5(XUI_VERSION . (!!XUI_REVISION ? 'R' . XUI_REVISION : '')));
+if (!((stripos(XUI::$rSettings['server_name'], 'xtream') !== false) || (stripos(XUI::$rSettings['server_name'], 'zapx') !== false) || (stripos(XUI::$rSettings['server_name'], 'streamcreed') !== false))) {
+	goto label3815;
+}
+
+goto label3811;
+
+label2293:
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `requests_per_second` INT(11) NULL DEFAULT \'0\';');
+
+label2297:
+
+XUI::$db->query('SHOW COLUMNS FROM `signals` LIKE \'cache\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label5049;
+}
+
+XUI::$db->query('ALTER TABLE `signals` ADD COLUMN `cache` TINYINT(4) NULL DEFAULT \'0\';');
+goto label5049;
+
+label2313:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2324;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `ondemand_balance_equal` TINYINT(1) NULL DEFAULT \'0\';');
+
+label2324:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'update_data\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label153;
+}
+
+goto label149;
+
+label2336:
+
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `plex_username` VARCHAR(256) NULL DEFAULT NULL;');
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `plex_password` VARCHAR(256) NULL DEFAULT NULL;');
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `plex_libraries` MEDIUMTEXT NULL DEFAULT NULL;');
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `scan_missing` TINYINT(4) NULL DEFAULT \'0\';');
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `extract_metadata` TINYINT(4) NULL DEFAULT \'0\';');
+goto label281;
+
+label2357:
+
+if (!file_exists(XUI_HOME . 'bin/nginx/conf/ip_xui.conf')) {
+	goto label2370;
+}
+
+unlink(XUI_HOME . 'bin/nginx/conf/ip_xui.conf');
+
+label2370:
+
+if (!file_exists(XUI_HOME . 'admin/subreseller_setup.php')) {
+	goto label4655;
+}
+
+unlink(XUI_HOME . 'admin/subreseller_setup.php');
+goto label4655;
+
+label2384:
+
+foreach (['http', 'https'] as $A7d54b094ae83c95) {
+	$dfbd28cf8ffb8e7b = file_get_contents(XUI_HOME . 'bin/nginx/ports/' . $A7d54b094ae83c95 . '.conf');
+
+	if (!(stripos($dfbd28cf8ffb8e7b, ' reuseport') !== false)) {
+		goto label2417;
+	}
+
+	file_put_contents(XUI_HOME . 'bin/nginx/ports/' . $A7d54b094ae83c95 . '.conf', str_replace(' reuseport', '', $dfbd28cf8ffb8e7b));
+	$b0663135b9a59341 = true;
+
+	label2417:
+}
+
+if (!$b0663135b9a59341) {
+	goto label4768;
+}
+
+exec('sudo -u xui ' . XUI_HOME . 'bin/nginx/sbin/nginx -s reload');
+exec('sudo service xuione restart');
+goto label4768;
+
+label2432:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `auth_flood_limit` INT(11) NULL DEFAULT \'30\';');
+
+label2436:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'auth_flood_sleep\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2616;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `auth_flood_sleep` INT(11) NULL DEFAULT \'1\';');
+goto label2616;
+
+label2452:
+
+foreach ($F7f0e6a3ea460ca8 as $d811dda1f3a55644) {
+	if (in_array($d811dda1f3a55644, $d094d3e133ec8c03)) {
+		goto label2464;
+	}
+
+	$d094d3e133ec8c03[] = $d811dda1f3a55644;
+	$af4a3f6194eb59c9 = true;
+
+	label2464:
+}
+
+if (!$af4a3f6194eb59c9) {
+	goto label1036;
+}
+
+$ed8bec081c874582 = tempnam(TMP_PATH, 'crontab');
+file_put_contents($ed8bec081c874582, implode("\n", $d094d3e133ec8c03) . "\n");
+goto label4716;
+
+label2485:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'extract_subtitles\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2500;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `extract_subtitles` TINYINT(1) NULL DEFAULT \'0\';');
+
+label2500:
+
+XUI::$db->query('SHOW COLUMNS FROM `users_groups` LIKE \'allow_change_bouquets\';');
+goto label1631;
+
+label2505:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `playlist_from_mysql` TINYINT(4) NULL DEFAULT \'0\';');
+
+label2509:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'show_images\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3499;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `show_images` TINYINT(4) NULL DEFAULT \'1\';');
+goto label3499;
+
+label2525:
+
+if (!(0 < XUI::$db->num_rows())) {
+	goto label5105;
+}
+
+$d094d3e133ec8c03 = [];
+XUI::$db->query('SELECT COUNT(*) AS `count` FROM `lines_output`;');
+$d353a4da8a0bb857 = XUI::$db->get_row()['count'];
+
+if (!(0 < $d353a4da8a0bb857)) {
+	goto label4313;
+}
+
+goto label301;
+
+label2547:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2558;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `send_xui_header` INT(11) NULL DEFAULT \'1\';');
+
+label2558:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'request_prebuffer\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4235;
+}
+
+goto label4231;
+
+label2570:
+
+$af4a3f6194eb59c9 = true;
+$a998abd856b07a59 .= "\n" . 'save 60 1000';
+echo 'Turning Redis Snapshots On' . "\n\n";
+
+label2573:
+
+if (!(stripos($a998abd856b07a59, 'stop-writes-on-bgsave-error yes') !== false)) {
+	goto label2679;
+}
+
+goto label2671;
+
+label2582:
+
+goto label4294;
+
+label2583:
+if (!(!$F2b2917e716db4d0 || !$C7ee8fa4c1e78264)) {
+	goto label1423;
+}
+
+echo 'Configuration' . "\n" . '------------------------------' . "\n";
+echo 'Increasing file limit... You need to reboot your system!' . "\n\n";
+goto label2968;
+
+label2593:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2604;
+}
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `last_status` TINYINT(4) NULL DEFAULT \'1\';');
+
+label2604:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'max_simultaneous_downloads\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label265;
+}
+
+goto label261;
+
+label2616:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'php_loopback\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2631;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `php_loopback` TINYINT(1) NULL DEFAULT \'1\';');
+
+label2631:
+
+goto label3112;
+
+label2632:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2643;
+}
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `remote_status` TINYINT(1) NULL DEFAULT \'1\';');
+
+label2643:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'modal_edit\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4790;
+}
+
+goto label4786;
+
+label2655:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'users\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2670;
+}
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `users` INT(16) NULL DEFAULT \'0\';');
+
+label2670:
+
+goto label4842;
+
+label2671:
+
+$af4a3f6194eb59c9 = true;
+$a998abd856b07a59 = str_replace('stop-writes-on-bgsave-error yes', 'stop-writes-on-bgsave-error no', $a998abd856b07a59);
+echo 'Disabling failed write lock on Redis' . "\n\n";
+
+label2679:
+
+if (!(stripos($a998abd856b07a59, "\n" . 'server-threads') === false)) {
+	goto label1470;
+}
+
+goto label1467;
+
+label2688:
+
+XUI::$db->query('SHOW COLUMNS FROM `users_groups` LIKE \'notice_html\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2703;
+}
+
+XUI::$db->query('ALTER TABLE `users_groups` ADD COLUMN `notice_html` MEDIUMTEXT NULL DEFAULT NULL;');
+
+label2703:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'threshold_cpu\';');
+goto label4271;
+
+label2708:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams_servers` LIKE \'ondemand_check\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2723;
+}
+
+XUI::$db->query('ALTER TABLE `streams_servers` ADD COLUMN `ondemand_check` INT(16) NULL DEFAULT NULL;');
+
+label2723:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'on_demand_checker\';');
+goto label1394;
+
+label2728:
+
+XUI::$db->query('SHOW COLUMNS FROM `mysql_syslog` LIKE \'server_id\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2743;
+}
+
+XUI::$db->query('ALTER TABLE `mysql_syslog` ADD COLUMN `server_id` TINYINT(4) NULL DEFAULT \'1\';');
+
+label2743:
+
+goto label5124;
+
+label2744:
+
+XUI::$db->query('UPDATE `bouquets` SET `bouquet_channels` = \'[]\' WHERE `bouquet_channels` IS NULL;');
+XUI::$db->query('UPDATE `bouquets` SET `bouquet_movies` = \'[]\' WHERE `bouquet_movies` IS NULL;');
+XUI::$db->query('UPDATE `bouquets` SET `bouquet_radios` = \'[]\' WHERE `bouquet_radios` IS NULL;');
+XUI::$db->query('UPDATE `bouquets` SET `bouquet_series` = \'[]\' WHERE `bouquet_series` IS NULL;');
+XUI::$db->query('SHOW TABLES LIKE \'lines_output\';');
+goto label2525;
+
+label2765:
+
+echo 'License expires: ' . date('Y-m-d H:i:s', Xui\Functions::getLicense()[3]) . "\n\n";
+$b7a2be4a9b9c6aad = Xui\Functions::checkReissues('TKbxeQrBXw2swDNwTh5yrj4jMV4RaLO0');
+XUI::$db->query('UPDATE `settings` SET `reissues` = ?', json_encode($b7a2be4a9b9c6aad));
+
+label2788:
+
+goto label3277;
+
+label2789:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'threshold_network\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2804;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `threshold_network` TINYINT(3) NULL DEFAULT \'67\';');
+
+label2804:
+
+goto label2121;
+
+label2805:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2820;
+}
+
+XUI::$db->query('ALTER TABLE `panel_logs` ADD COLUMN `unique` VARCHAR(32) NULL DEFAULT NULL;');
+XUI::$db->query('UPDATE IGNORE `panel_logs` SET `unique` = MD5(CONCAT(`type`, `log_message`, `log_extra`, `line`));');
+
+label2820:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'remote_status\';');
+goto label2632;
+
+label2825:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2836;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `auth_flood_seconds` INT(11) NULL DEFAULT \'10\';');
+
+label2836:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'auth_flood_limit\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2436;
+}
+
+goto label2432;
+
+label2848:
+
+if (!(substr($D6be258a9043b749[$df6991d59f367c7e], 0, 23) == 'DefaultLimitNOFILESoft=')) {
+	goto label2859;
+}
+
+$C7ee8fa4c1e78264 = true;
+
+label2859:
+
+$df6991d59f367c7e++;
+goto label2582;
+
+label2862:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `status_uuid` VARCHAR(512) NULL DEFAULT NULL;');
+
+if (empty(XUI::$rSettings['allowed_stb_types'])) {
+	goto label4981;
+}
+
+$C7959f97a8f69c2a = json_decode(XUI::$rSettings['allowed_stb_types'], true);
+
+if (!(0 < count($C7959f97a8f69c2a))) {
+	goto label4981;
+}
+
+if (in_array('TH100', $C7959f97a8f69c2a)) {
+	goto label3064;
+}
+
+goto label3062;
+
+label2891:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `total_users` INT(11) NULL DEFAULT \'0\';');
+
+label2895:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'dts_legacy_ffmpeg\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4806;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `dts_legacy_ffmpeg` TINYINT(1) NULL DEFAULT \'0\';');
+goto label4806;
+
+label2911:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `player_opacity` TINYINT(1) NULL DEFAULT \'10\';');
+
+label2915:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'player_allow_playlist\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label225;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `player_allow_playlist` TINYINT(1) NULL DEFAULT \'1\';');
+goto label225;
+
+label2931:
+
+XUI::$db->query('ALTER TABLE `epg_api` CHANGE COLUMN `altId` `altId` VARCHAR(50) NULL DEFAULT NULL, CHANGE COLUMN `callSign` `callSign` VARCHAR(256) NULL DEFAULT NULL, CHANGE COLUMN `name` `name` VARCHAR(256) NULL DEFAULT NULL, CHANGE COLUMN `affiliateCallSign` `affiliateCallSign` VARCHAR(128) NULL DEFAULT NULL, CHANGE COLUMN `picon` `picon` VARCHAR(1024) NULL DEFAULT NULL;');
+XUI::$db->query('ALTER TABLE `epg_channels` CHANGE COLUMN `epg_id` `epg_id` INT(8) NULL DEFAULT NULL, CHANGE COLUMN `channel_id` `channel_id` VARCHAR(64) NULL DEFAULT NULL, CHANGE COLUMN `name` `name` VARCHAR(256) NULL DEFAULT NULL;');
+XUI::$db->query('ALTER TABLE `epg_languages` CHANGE COLUMN `language` `language` VARCHAR(256) NULL DEFAULT NULL, CHANGE COLUMN `name` `name` VARCHAR(256) NULL DEFAULT NULL, CHANGE COLUMN `dateadded` `dateadded` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;');
+XUI::$db->query('ALTER TABLE `panel_stats` CHANGE COLUMN `type` `type` VARCHAR(16) NULL DEFAULT NULL;');
+XUI::$db->query('ALTER TABLE `streams_stats` CHANGE COLUMN `type` `type` VARCHAR(16) NULL DEFAULT NULL;');
+goto label931;
+
+label2952:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams_servers` LIKE \'audio_codec\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2967;
+}
+
+XUI::$db->query('ALTER TABLE `streams_servers` ADD COLUMN `audio_codec` VARCHAR(64) NULL DEFAULT NULL;');
+
+label2967:
+
+goto label1358;
+
+label2968:
+
+if ($F2b2917e716db4d0) {
+	goto label2976;
+}
+
+shell_exec('sudo echo "' . "\n" . 'DefaultLimitNOFILE=1048576" >> "/etc/systemd/system.conf"');
+shell_exec('sudo echo "' . "\n" . 'DefaultLimitNOFILE=1048576" >> "/etc/systemd/user.conf"');
+
+label2976:
+
+if ($C7ee8fa4c1e78264) {
+	goto label1423;
+}
+
+goto label1417;
+
+label2979:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `keep_login` INT(11) NULL DEFAULT \'0\';');
+
+label2983:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'keep_errors\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3391;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `keep_errors` INT(11) NULL DEFAULT \'0\';');
+goto label3391;
+
+label2999:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'time_offset\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3014;
+}
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `time_offset` INT(11) NULL DEFAULT \'0\';');
+
+label3014:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'ping\';');
+goto label2058;
+
+label3019:
+
+XUI::$db->query('DELETE FROM `access_codes` WHERE `code` = \'c\';');
+unlink(XUI_HOME . 'bin/nginx/conf/codes/c.conf');
+$b0663135b9a59341 = true;
+
+label3029:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'mag_legacy_access\';');
+goto label4552;
+
+label3034:
+
+exit(0);
+
+label3035:
+
+$b0663135b9a59341 = false;
+$aa7ca17b42be6668 = false;
+
+if (!isset($argv[1])) {
+	goto label1066;
+}
+
+goto label1065;
+
+label3042:
+
+XUI::$db->query('SHOW COLUMNS FROM `mag_devices` LIKE \'mac_filter\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3892;
+}
+
+XUI::$db->query('ALTER TABLE `mag_devices` ADD COLUMN `mac_filter` VARCHAR(50) NULL DEFAULT NULL;');
+XUI::$db->query('UPDATE `mag_devices` SET `mac_filter` = REPLACE(`mac`, \':\', \'\');');
+goto label3892;
+
+label3062:
+
+$C7959f97a8f69c2a[] = 'TH100';
+
+label3064:
+
+if (in_array('TH200', $C7959f97a8f69c2a)) {
+	goto label3072;
+}
+
+$C7959f97a8f69c2a[] = 'TH200';
+
+label3072:
+
+goto label4973;
+
+label3073:
+
+XUI::$db->query('SHOW COLUMNS FROM `watch_folders` LIKE \'store_categories\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3088;
+}
+
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `store_categories` TINYINT(1) NULL DEFAULT \'0\';');
+
+label3088:
+
+goto label3964;
+
+label3089:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3100;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `connected_video_path` MEDIUMTEXT NULL DEFAULT NULL;');
+
+label3100:
+
+XUI::$db->query('SHOW COLUMNS FROM `watch_folders` LIKE \'remove_subtitles\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3795;
+}
+
+goto label3791;
+
+label3112:
+
+XUI::$db->query('SHOW COLUMNS FROM `users_groups` LIKE \'subresellers\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1892;
+}
+
+XUI::$db->query('ALTER TABLE `users_groups` ADD COLUMN `subresellers` MEDIUMTEXT NULL DEFAULT NULL;');
+$c65e1c212da2f6fc = [];
+XUI::$db->query('SELECT `reseller`, `subreseller` FROM `users_subreseller`;');
+goto label3315;
+
+label3133:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'mag_keep_extension\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3148;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `mag_keep_extension` TINYINT(1) NULL DEFAULT \'1\';');
+
+label3148:
+
+goto label2038;
+
+label3149:
+
+echo 'All servers are up to date!' . "\n\n";
+
+label3150:
+
+goto label5194;
+
+label3151:
+
+echo 'All servers are Online and reporting back to XUI!' . "\n\n";
+
+label3152:
+
+echo 'Installed Version: ' . $Bcf70cba56392975[SERVER_ID]['xui_version'] . "\n" . '------------------------------' . "\n";
+$Ac6558eb5dedaf7e = 0;
+
+foreach ($Bcf70cba56392975 as $C082ca9ed03f473c => $Ec379295dc7029e6) {
+	if (!($C082ca9ed03f473c == SERVER_ID)) {
+		goto label3170;
+	}
+
+	goto label3197;
+
+	label3170:
+	if (!(($Ec379295dc7029e6['server_type'] == 0) && $Ec379295dc7029e6['xui_version'] && ($Ec379295dc7029e6['xui_version'] != $Bcf70cba56392975[SERVER_ID]['xui_version']))) {
+		goto label3197;
+	}
+
+	echo 'Server #' . $C082ca9ed03f473c . ' - ' . $Ec379295dc7029e6['server_ip'] . ' - Running v' . $Ec379295dc7029e6['xui_version'] . "\n";
+	$Ac6558eb5dedaf7e++;
+
+	label3197:
+}
+
+goto label1231;
+
+label3200:
+
+XUI::$db->query('SHOW INDEXES IN `streams_series` WHERE `key_name` = \'tmdb_id\' AND `Non_unique` = 0;');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3215;
+}
+
+XUI::$db->query('ALTER TABLE `streams_series` DROP INDEX `tmdb_id`, ADD UNIQUE INDEX `tmdb_id` (`tmdb_id`);');
+
+label3215:
+
+goto label4068;
+
+label3216:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'send_altsvc_header\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3231;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `send_altsvc_header` TINYINT(4) NULL DEFAULT \'0\';');
+
+label3231:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'send_server_header\';');
+goto label697;
+
+label3236:
+
+shell_exec('sudo rm -rf ' . XUI_HOME . 'www/c');
+
+label3242:
+
+if (!file_exists(XUI_HOME . 'ministra/new/')) {
+	goto label3256;
+}
+
+shell_exec('sudo rm -rf ' . XUI_HOME . 'ministra/new');
+
+label3256:
+
+goto label1548;
+
+label3257:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'disable_mag_token\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3272;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `disable_mag_token` TINYINT(1) NULL DEFAULT \'0\';');
+
+label3272:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'ondemand_balance_equal\';');
+goto label2313;
+
+label3277:
+
+if (!$Bcf70cba56392975[SERVER_ID]['is_main']) {
+	goto label535;
+}
+
+XUI::$db->query('SHOW INDEXES IN `servers` WHERE `key_name` = \'private_ip\';');
+
+if (!(0 < XUI::$db->num_rows())) {
+	goto label3200;
+}
+
+XUI::$db->query('ALTER TABLE `servers` DROP INDEX `private_ip`;');
+goto label3200;
+
+label3299:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'license\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3314;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `license` VARCHAR(32) NULL DEFAULT NULL;');
+
+label3314:
+
+goto label4156;
+
+label3315:
+
+foreach (XUI::$db->get_rows() as $Fb9da1713bff19ce) {
+	$c65e1c212da2f6fc[$Fb9da1713bff19ce['reseller']][] = intval($Fb9da1713bff19ce['subreseller']);
+}
+
+foreach ($c65e1c212da2f6fc as $De8ba9bdb4fd822c => $B1dadd1bfbd616ac) {
+	XUI::$db->query('UPDATE `users_groups` SET `subresellers` = ? WHERE `group_id` = ?;', '[' . implode(',', array_unique($B1dadd1bfbd616ac)) . ']', $De8ba9bdb4fd822c);
+}
+
+XUI::$db->query('DROP TABLE `users_subreseller`;');
+goto label1892;
+
+label3355:
+
+XUI::$db->query('UPDATE `mag_devices` SET `theme_type` = 0;');
+
+label3359:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams` LIKE \'fps_restart\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1999;
+}
+
+goto label1995;
+
+label3371:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'api_probe\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3386;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `api_probe` TINYINT(4) NULL DEFAULT \'1\';');
+
+label3386:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'last_status\';');
+goto label2593;
+
+label3391:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'keep_restarts\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3406;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `keep_restarts` INT(11) NULL DEFAULT \'0\';');
+
+label3406:
+
+goto label2999;
+
+label3407:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `check_vod` TINYINT(1) NULL DEFAULT \'0\';');
+
+label3411:
+
+XUI::$db->query('SHOW COLUMNS FROM `epg` LIKE \'offset\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1595;
+}
+
+XUI::$db->query('ALTER TABLE `epg` ADD COLUMN `offset` INT(11) NULL DEFAULT \'0\';');
+goto label1595;
+
+label3427:
+
+file_put_contents(XUI_HOME . 'bin/nginx/conf/realip_cloudflare.conf', '');
+chown(XUI_HOME . 'bin/nginx/conf/realip_cloudflare.conf', 'xui');
+
+label3439:
+
+if (file_exists(XUI_HOME . 'bin/nginx/conf/realip_xui.conf')) {
+	goto label3521;
+}
+
+file_put_contents(XUI_HOME . 'bin/nginx/conf/realip_xui.conf', '');
+goto label3515;
+
+label3453:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3464;
+}
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `governors` MEDIUMTEXT NULL DEFAULT NULL;');
+
+label3464:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'governor\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1956;
+}
+
+goto label1952;
+
+label3476:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3487;
+}
+
+XUI::$db->query('ALTER TABLE `streams` ADD COLUMN `tmdb_id` INT(11) NULL DEFAULT NULL;');
+
+label3487:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams_series` LIKE \'similar\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4399;
+}
+
+goto label4395;
+
+label3499:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'kill_rogue_ffmpeg\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3514;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `kill_rogue_ffmpeg` TINYINT(4) NULL DEFAULT \'1\';');
+
+label3514:
+
+goto label4822;
+
+label3515:
+
+chown(XUI_HOME . 'bin/nginx/conf/realip_xui.conf', 'xui');
+
+label3521:
+if (!(!file_exists(XUI_HOME . 'bin/nginx/conf/gzip.conf') && $Bcf70cba56392975[SERVER_ID]['is_main'])) {
+	goto label4048;
+}
+
+file_put_contents(XUI_HOME . 'bin/nginx/conf/gzip.conf', 'gzip off;');
+chown(XUI_HOME . 'bin/nginx/conf/gzip.conf', 'xui');
+goto label4048;
+
+label3548:
+
+if (!file_exists(XUI_HOME . 'bin/ffprobe')) {
+	goto label3561;
+}
+
+unlink(XUI_HOME . 'bin/ffprobe');
+
+label3561:
+if (!(file_exists(XUI_HOME . 'www/c/') && !is_link(XUI_HOME . 'www/c'))) {
+	goto label3242;
+}
+
+goto label3236;
+
+label3578:
+
+XUI::$db->query('ALTER TABLE `enigma2_devices` ADD FULLTEXT INDEX `search` (`mac_filter`, `public_ip`);');
+XUI::$db->query('ALTER TABLE `users` ADD FULLTEXT INDEX `search` (`username`, `email`, `ip`, `notes`, `reseller_dns`);');
+XUI::$db->query('ALTER TABLE `lines_divergence` CHANGE COLUMN `divergence` `divergence` INT NULL DEFAULT NULL;');
+
+label3590:
+
+XUI::$db->query('SHOW COLUMNS FROM `panel_logs` LIKE \'unique\';');
+goto label2805;
+
+label3595:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'redis_handler\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3610;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `redis_handler` TINYINT(1) NULL DEFAULT \'0\';');
+
+label3610:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'redis_password\';');
+goto label377;
+
+label3615:
+
+if (file_exists(XUI_HOME . 'bin/nginx/conf/realip_cdn.conf')) {
+	goto label3634;
+}
+
+file_put_contents(XUI_HOME . 'bin/nginx/conf/realip_cdn.conf', '');
+chown(XUI_HOME . 'bin/nginx/conf/realip_cdn.conf', 'xui');
+
+label3634:
+
+if (file_exists(XUI_HOME . 'bin/nginx/conf/realip_cloudflare.conf')) {
+	goto label3439;
+}
+
+goto label3427;
+
+label3642:
+
+XUI::$db->query('INSERT INTO `crontab` (`filename`, `time`, `enabled`) VALUES (\'tmdb_popular.php\', \'0 * * * *\', 1);');
+exec('sudo -u xui ' . XUI_HOME . 'bin/php/bin/php ' . XUI_HOME . 'crons/tmdb_popular.php > /dev/null 2>&1 &');
+unlink(XUI_HOME . 'tmp/crontab');
+
+label3660:
+
+XUI::$db->query('SELECT * FROM `crontab` WHERE `filename` = \'plex.php\';');
+goto label4575;
+
+label3665:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'cache_changes\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3680;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `cache_changes` TINYINT(1) NULL DEFAULT \'1\';');
+
+label3680:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams` LIKE \'updated\';');
+goto label1257;
+
+label3685:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'block_proxies\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3700;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `block_proxies` TINYINT(4) NULL DEFAULT \'0\';');
+
+label3700:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'ip_subnet_match\';');
+goto label1148;
+
+label3705:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `reissues` MEDIUMTEXT NULL DEFAULT NULL;');
+
+label3709:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams` LIKE \'direct_proxy\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1;
+}
+
+XUI::$db->query('ALTER TABLE `streams` ADD COLUMN `direct_proxy` TINYINT(1) NULL DEFAULT \'0\';');
+goto label1;
+
+label3725:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'fails_per_time\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3740;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `fails_per_time` INT(11) NULL DEFAULT \'86400\';');
+
+label3740:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams` LIKE \'plex_uuid\';');
+goto label4187;
+
+label3745:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'restreamer_bypass_proxy\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3760;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `restreamer_bypass_proxy` TINYINT(1) NULL DEFAULT \'0\';');
+
+label3760:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'mysql_sleep_kill\';');
+goto label451;
+
+label3765:
+
+if (file_exists(XUI_HOME . 'bin/nginx/conf/limit_queue.conf')) {
+	goto label3784;
+}
+
+file_put_contents(XUI_HOME . 'bin/nginx/conf/limit_queue.conf', '');
+chown(XUI_HOME . 'bin/nginx/conf/limit_queue.conf', 'xui');
+
+label3784:
+
+shell_exec('sudo chmod 0660 ' . XUI_HOME . 'bin/php/sockets/*');
+goto label423;
+
+label3791:
+
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `remove_subtitles` TINYINT(1) NULL DEFAULT \'0\';');
+
+label3795:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'disallow_2nd_ip_max\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label474;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `disallow_2nd_ip_max` INT(11) NULL DEFAULT \'1\';');
+goto label474;
+
+label3811:
+
+XUI::$db->query('UPDATE `settings` SET `server_name` = \'XUI.one\';');
+
+label3815:
+
+XUI::$db->query('SELECT * FROM `access_codes` WHERE `enabled` = 1 AND `type` = 0;');
+$db07add3638d36e3 = 0;
+echo 'Access Codes' . "\n" . '------------------------------' . "\n";
+goto label641;
+
+label3822:
+
+XUI::$db->query('ALTER TABLE `servers` CHANGE COLUMN `parent_id` `parent_id` TEXT NULL DEFAULT NULL;');
+
+label3826:
+
+XUI::$db->query('SELECT * FROM `crontab` WHERE `filename` = \'providers.php\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1455;
+}
+
+goto label1446;
+
+label3838:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'disable_playlist_restreamer\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3853;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `disable_playlist_restreamer` TINYINT(1) NULL DEFAULT \'0\';');
+
+label3853:
+
+goto label4619;
+
+label3854:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3865;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `on_demand_wait_time` TINYINT(4) NULL DEFAULT \'20\';');
+
+label3865:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'playlist_from_mysql\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2509;
+}
+
+goto label2505;
+
+label3877:
+
+if (!(XUI::$db->get_row()['redis_password'] != $fd093b5358e9a519)) {
+	goto label3891;
+}
+
+echo 'Updating Redis password in database' . "\n";
+XUI::$db->query('UPDATE `settings` SET `redis_password` = ?;', $fd093b5358e9a519);
+
+label3891:
+
+goto label2224;
+
+label3892:
+
+XUI::$db->query('SHOW COLUMNS FROM `enigma2_devices` LIKE \'mac_filter\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1171;
+}
+
+XUI::$db->query('ALTER TABLE `enigma2_devices` ADD COLUMN `mac_filter` VARCHAR(50) NULL DEFAULT NULL;');
+XUI::$db->query('UPDATE `enigma2_devices` SET `mac_filter` = REPLACE(`mac`, \':\', \'\');');
+goto label1171;
+
+label3912:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'on_demand_instant_off\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3927;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `on_demand_instant_off` TINYINT(4) NULL DEFAULT \'0\';');
+
+label3927:
+
+goto label1528;
+
+label3928:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'dashboard_status\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3943;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `dashboard_status` TINYINT(1) NULL DEFAULT \'1\';');
+
+label3943:
+
+goto label2708;
+
+label3944:
+
+XUI::$db->query('ALTER TABLE `streams_servers` ADD COLUMN `compatible` TINYINT(1) NULL DEFAULT \'0\';');
+
+label3948:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'read_native_hls\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4921;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `read_native_hls` TINYINT(1) NULL DEFAULT \'1\';');
+goto label4921;
+
+label3964:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'thread_count_movie\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3979;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `thread_count_movie` TINYINT(3) NULL DEFAULT \'5\';');
+
+label3979:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'thread_count_show\';');
+goto label2141;
+
+label3984:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `reseller_ssl_domain` TINYINT(1) NULL DEFAULT \'1\';');
+
+label3988:
+
+XUI::$db->query('SHOW COLUMNS FROM `panel_logs` LIKE \'server_id\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label113;
+}
+
+XUI::$db->query('TRUNCATE `panel_logs`;');
+goto label109;
+
+label4004:
+
+XUI::$db->query('DELETE FROM `crontab` WHERE `filename` = \'redis_cache.php\';');
+unlink(XUI_HOME . 'tmp/crontab');
+
+label4013:
+
+XUI::$db->query('SELECT * FROM `crontab` WHERE `filename` = \'detect_restream.php\';');
+
+if (!(XUI::$db->num_rows() == 1)) {
+	goto label685;
+}
+
+goto label676;
+
+label4025:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4036;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `fallback_parser` TINYINT(1) NULL DEFAULT \'0\';');
+
+label4036:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'alternative_titles\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label245;
+}
+
+goto label241;
+
+label4048:
+
+if (file_exists(XUI_HOME . 'bin/nginx/conf/limit.conf')) {
+	goto label4067;
+}
+
+file_put_contents(XUI_HOME . 'bin/nginx/conf/limit.conf', '');
+chown(XUI_HOME . 'bin/nginx/conf/limit.conf', 'xui');
+
+label4067:
+
+goto label3765;
+
+label4068:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'hide_failures\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4083;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `hide_failures` TINYINT(4) NULL DEFAULT \'0\';');
+
+label4083:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'legacy_panel_api\';');
+goto label86;
+
+label4088:
+
+XUI::$db->query('SHOW COLUMNS FROM `watch_folders` LIKE \'fallback_show\';');
+
+if (!(XUI::$db->num_rows() == 1)) {
+	goto label4103;
+}
+
+XUI::$db->query('ALTER TABLE `watch_folders` DROP COLUMN `fallback_show`;');
+
+label4103:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'force_epg_timezone\';');
+goto label1694;
+
+label4108:
+
+if (file_exists(XUI_HOME . 'admin/assets/css/custom.dark.css')) {
+	goto label4126;
+}
+
+touch(XUI_HOME . 'admin/assets/css/custom.dark.css');
+chown(XUI_HOME . 'admin/assets/css/custom.dark.css', 'xui');
+
+label4126:
+
+shell_exec('sudo chmod 0775 ' . XUI_HOME . 'bin/install');
+goto label535;
+
+label4133:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4144;
+}
+
+XUI::$db->query('ALTER TABLE `streams` ADD COLUMN `year` INT(4) NULL DEFAULT NULL;');
+
+label4144:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams` LIKE \'rating\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1658;
+}
+
+goto label1654;
+
+label4156:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'stop_failures\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4175;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `stop_failures` TINYINT(3) NULL DEFAULT \'3\';');
+XUI::$db->query('UPDATE `settings` SET `request_prebuffer` = 1 WHERE `request_prebuffer` = 2;');
+
+label4175:
+
+goto label3745;
+
+label4176:
+
+Xui\Functions::updateCredentials();
+echo 'Database' . "\n" . '------------------------------' . "\n";
+XUI::E43c27EBF86b4c47();
+
+if (!XUI::$db->connected) {
+	goto label532;
+}
+
+goto label530;
+
+label4187:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label285;
+}
+
+XUI::$db->query('ALTER TABLE `streams` ADD COLUMN `plex_uuid` VARCHAR(256) NULL DEFAULT \'\';');
+XUI::$db->query('ALTER TABLE `streams_series` ADD COLUMN `plex_uuid` VARCHAR(256) NULL DEFAULT \'\';');
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `plex_ip` VARCHAR(128) NULL DEFAULT NULL;');
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `plex_port` INT(5) NULL DEFAULT \'0\';');
+goto label2336;
+
+label4211:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `send_unique_header` VARCHAR(256) NULL DEFAULT \'\';');
+
+label4215:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'send_unique_header_domain\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1430;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `send_unique_header_domain` VARCHAR(256) NULL DEFAULT \'\';');
+goto label1430;
+
+label4231:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `request_prebuffer` INT(11) NULL DEFAULT \'1\';');
+
+label4235:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'debug_show_errors\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1512;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `debug_show_errors` TINYINT(4) NULL DEFAULT \'0\';');
+goto label1512;
+
+label4251:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams` LIKE \'similar\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4266;
+}
+
+XUI::$db->query('ALTER TABLE `streams` ADD COLUMN `similar` MEDIUMTEXT NULL DEFAULT NULL;');
+
+label4266:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams` LIKE \'tmdb_id\';');
+goto label3476;
+
+label4271:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4282;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `threshold_cpu` TINYINT(3) NULL DEFAULT \'67\';');
+
+label4282:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'threshold_mem\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1615;
+}
+
+goto label1611;
+
+label4294:
+
+if (!($df6991d59f367c7e < count($D6be258a9043b749))) {
+	goto label2583;
+}
+
+if (!(substr($D6be258a9043b749[$df6991d59f367c7e], 0, 19) == 'DefaultLimitNOFILE=')) {
+	goto label4312;
+}
+
+$F2b2917e716db4d0 = true;
+
+label4312:
+
+goto label2848;
+
+label4313:
+
+foreach ($d094d3e133ec8c03 as $f7107e3a92443147 => $Cd826a7439b979ee) {
+	XUI::$db->query('UPDATE `lines` SET `allowed_outputs` = ? WHERE `id` = ?;', '[' . implode(',', array_map('intval', $Cd826a7439b979ee)) . ']', $f7107e3a92443147);
+}
+
+XUI::$db->query('DROP TABLE `lines_output`;');
+goto label5105;
+
+label4339:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'save_restart_logs\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4354;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `save_restart_logs` TINYINT(4) NULL DEFAULT \'1\';');
+
+label4354:
+
+goto label4355;
+
+label4355:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'keep_activity\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4370;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `keep_activity` INT(11) NULL DEFAULT \'0\';');
+
+label4370:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'keep_client\';');
+goto label1853;
+
+label4375:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `legacy_mag_auth` TINYINT(4) NULL DEFAULT \'0\';');
+
+label4379:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'ignore_invalid_users\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3912;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `ignore_invalid_users` TINYINT(4) NULL DEFAULT \'0\';');
+goto label3912;
+
+label4395:
+
+XUI::$db->query('ALTER TABLE `streams_series` ADD COLUMN `similar` MEDIUMTEXT NULL DEFAULT NULL;');
+
+label4399:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'xui_revision\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4752;
+}
+
+XUI::$db->query('ALTER TABLE `servers` ADD COLUMN `xui_revision` INT(2) NULL DEFAULT NULL;');
+goto label4752;
+
+label4415:
+
+if ($e1aa0fcc2c644398 == 0) {
+	goto label4420;
+}
+
+echo "\n";
+goto label3152;
+
+label4420:
+
+goto label3151;
+
+label4421:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4432;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `security_key` VARCHAR(256) NULL DEFAULT \'\';');
+
+label4432:
+
+XUI::$db->query('SELECT `stationId` FROM `epg_api` WHERE `picon` LIKE \'%://fanc.tmsimg.com%\';');
+
+if (!(0 < XUI::$db->num_rows())) {
+	goto label608;
+}
+
+goto label604;
+
+label4444:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'ministra_allow_blank\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4459;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `ministra_allow_blank` INT(11) NULL DEFAULT \'0\';');
+
+label4459:
+
+goto label2101;
+
+label4460:
+
+echo 'No access codes available!' . "\n" . 'Generate a rescue code using tools' . "\n\n";
+
+label4461:
+
+XUI::$db->query('SELECT COUNT(`id`) AS `count` FROM `users` LEFT JOIN `users_groups` ON `users_groups`.`group_id` = `users`.`member_group_id` WHERE `status` = 1 AND `users_groups`.`is_admin` = 1;');
+
+if (!(XUI::$db->get_row()['count'] == 0)) {
+	goto label4499;
+}
+
+goto label4498;
+
+label4474:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1737;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `ignore_keyframes` INT(11) NULL DEFAULT \'0\';');
+XUI::$db->query('ALTER TABLE `users_packages` CHANGE COLUMN `is_addon` `is_addon` TINYINT(4) NULL DEFAULT \'0\', CHANGE COLUMN `is_trial` `is_trial` TINYINT(4) NULL DEFAULT \'0\', CHANGE COLUMN `is_official` `is_official` TINYINT(4) NULL DEFAULT \'0\', CHANGE COLUMN `trial_credits` `trial_credits` FLOAT NULL DEFAULT \'0\', CHANGE COLUMN `official_credits` `official_credits` FLOAT NULL DEFAULT \'0\', CHANGE COLUMN `trial_duration` `trial_duration` INT(11) NULL DEFAULT \'0\', CHANGE COLUMN `official_duration` `official_duration` INT(11) NULL DEFAULT \'0\';');
+XUI::$db->query('ALTER TABLE `access_codes` CHANGE COLUMN `type` `type` TINYINT(4) NULL DEFAULT \'0\', CHANGE COLUMN `enabled` `enabled` TINYINT(4) NULL DEFAULT \'0\';');
+XUI::$db->query('ALTER TABLE `blocked_asns` CHANGE COLUMN `isp` `isp` VARCHAR(256) NULL DEFAULT NULL, CHANGE COLUMN `domain` `domain` VARCHAR(256) NULL DEFAULT NULL, CHANGE COLUMN `country` `country` VARCHAR(16) NULL DEFAULT NULL, CHANGE COLUMN `type` `type` VARCHAR(64) NULL DEFAULT NULL;');
+goto label2931;
+
+label4498:
+
+echo 'No administrator users are available on the system.' . "\n" . 'Generate a rescue user with tools' . "\n\n";
+
+label4499:
+
+echo 'Servers' . "\n" . '------------------------------' . "\n";
+$e1aa0fcc2c644398 = 0;
+
+foreach ($Bcf70cba56392975 as $C082ca9ed03f473c => $Ec379295dc7029e6) {
+	if (!($C082ca9ed03f473c == SERVER_ID)) {
+		goto label4512;
+	}
+
+	goto label4549;
+
+	label4512:
+	if (!(!$Ec379295dc7029e6['server_online'] && $Ec379295dc7029e6['enabled'] && ($Ec379295dc7029e6['status'] != 3) && ($Ec379295dc7029e6['status'] != 5))) {
+		goto label4549;
+	}
+
+	echo 'Server #' . $C082ca9ed03f473c . ' - ' . $Ec379295dc7029e6['server_ip'] . ' - Down since: ' . ($Ec379295dc7029e6['last_check_ago'] ? date('Y-m-d H:i:s', $Ec379295dc7029e6['last_check_ago']) : 'Always') . "\n";
+	$e1aa0fcc2c644398++;
+
+	label4549:
+}
+
+goto label4415;
+
+label4552:
+
+if (!(XUI::$db->num_rows() == 1)) {
+	goto label4563;
+}
+
+XUI::$db->query('ALTER TABLE `settings` DROP COLUMN `mag_legacy_access`;');
+
+label4563:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'mag_legacy_redirect\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label872;
+}
+
+goto label868;
+
+label4575:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4591;
+}
+
+XUI::$db->query('INSERT INTO `crontab` (`filename`, `time`, `enabled`) VALUES (\'plex.php\', \'*/5 * * * *\', 1);');
+unlink(XUI_HOME . 'tmp/crontab');
+
+label4591:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'security_key\';');
+goto label4421;
+
+label4596:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4607;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `enable_cache` TINYINT(4) NULL DEFAULT \'1\';');
+
+label4607:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'legacy_mag_auth\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4379;
+}
+
+goto label4375;
+
+label4619:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'mag_load_all_channels\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4634;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `mag_load_all_channels` TINYINT(1) NULL DEFAULT \'0\';');
+
+label4634:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'php_pids\';');
+goto label2015;
+
+label4639:
+
+XUI::$db->query('SHOW COLUMNS FROM `watch_folders` LIKE \'auto_upgrade\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4654;
+}
+
+XUI::$db->query('ALTER TABLE `watch_folders` ADD COLUMN `auto_upgrade` TINYINT(4) NULL DEFAULT \'0\';');
+
+label4654:
+
+goto label2188;
+
+label4655:
+
+if (!file_exists(XUI_HOME . 'admin/subresellers.php')) {
+	goto label4668;
+}
+
+unlink(XUI_HOME . 'admin/subresellers.php');
+
+label4668:
+
+if (!$Bcf70cba56392975[SERVER_ID]['is_main']) {
+	goto label3891;
+}
+
+goto label4675;
+
+label4675:
+
+foreach ($Bcf70cba56392975 as $C082ca9ed03f473c => $Fdbe2b9ed5184132) {
+	XUI::$db->query('DELETE FROM `signals` WHERE `custom_data` = ?;', json_encode(['action' => 'update_binaries']));
+	XUI::$db->query('INSERT INTO `signals`(`server_id`, `time`, `custom_data`) VALUES(?, ?, ?);', $C082ca9ed03f473c, time(), json_encode(['action' => 'update_binaries']));
+}
+
+$a998abd856b07a59 = file_get_contents(XUI_HOME . 'bin/redis/redis.conf');
+
+if (!(stripos($a998abd856b07a59, "\n" . 'save 60 1000') === false)) {
+	goto label960;
+}
+
+$af4a3f6194eb59c9 = true;
+goto label952;
+
+label4716:
+
+exec('sudo chattr -i /var/spool/cron/crontabs/root');
+exec('sudo crontab -r');
+exec('sudo crontab ' . $ed8bec081c874582);
+exec('sudo chattr +i /var/spool/cron/crontabs/root');
+echo 'Root crontab installed.' . "\n\n";
+goto label1036;
+
+label4731:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'mag_default_type\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3359;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `mag_default_type` TINYINT(1) NULL DEFAULT \'0\';');
+
+if (XUI::$rSettings['stalker_theme'] == 'xui') {
+	goto label81;
+}
+
+goto label72;
+
+label4752:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'ffmpeg_cpu\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4767;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `ffmpeg_cpu` VARCHAR(8) NULL DEFAULT \'4.0\';');
+
+label4767:
+
+goto label888;
+
+label4768:
+
+$F7f0e6a3ea460ca8 = [];
+
+if (!file_exists(CRON_PATH . 'root_signals.php')) {
+	goto label4785;
+}
+
+$F7f0e6a3ea460ca8[] = '* * * * * ' . PHP_BIN . ' ' . CRON_PATH . 'root_signals.php # XUI';
+
+label4785:
+
+goto label992;
+
+label4786:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `modal_edit` TINYINT(1) NULL DEFAULT \'1\';');
+
+label4790:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'group_buttons\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3299;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `group_buttons` TINYINT(1) NULL DEFAULT \'1\';');
+goto label3299;
+
+label4806:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'allow_cdn_access\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4821;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `allow_cdn_access` TINYINT(1) NULL DEFAULT \'0\';');
+
+label4821:
+
+goto label3257;
+
+label4822:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'monitor_connection_status\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4837;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `monitor_connection_status` TINYINT(4) NULL DEFAULT \'1\';');
+
+label4837:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'stream_fail_sleep\';');
+goto label1753;
+
+label4842:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'segment_wait_time\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4857;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `segment_wait_time` INT(11) NULL DEFAULT \'20\';');
+
+label4857:
+
+XUI::$db->query('SHOW COLUMNS FROM `watch_folders` LIKE \'target_container\';');
+goto label969;
+
+label4862:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `last_cache` INT(11) NULL DEFAULT \'0\';');
+
+label4866:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'last_cache_taken\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4444;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `last_cache_taken` INT(11) NULL DEFAULT \'0\';');
+goto label4444;
+
+label4882:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4893;
+}
+
+XUI::$db->query('ALTER TABLE `mag_devices` ADD COLUMN `theme_type` TINYINT(1) NULL DEFAULT \'0\';');
+
+label4893:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'vod_sort_newest\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label5093;
+}
+
+goto label5085;
+
+label4905:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'send_protection_headers\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4920;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `send_protection_headers` TINYINT(4) NULL DEFAULT \'0\';');
+
+label4920:
+
+goto label3216;
+
+label4921:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'keep_protocol\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4936;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `keep_protocol` TINYINT(1) NULL DEFAULT \'0\';');
+
+label4936:
+
+goto label4251;
+
+label4937:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'header_stats\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3133;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `header_stats` TINYINT(1) NULL DEFAULT \'1\';');
+goto label3133;
+
+label4953:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'parse_type\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label4968;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `parse_type` VARCHAR(12) NULL DEFAULT \'ptn\';');
+
+label4968:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'fallback_parser\';');
+goto label4025;
+
+label4973:
+
+XUI::$db->query('UPDATE `settings` SET `allowed_stb_types` = ?;', json_encode($C7959f97a8f69c2a));
+
+label4981:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers` LIKE \'governors\';');
+goto label3453;
+
+label4986:
+
+XUI::$db->query('SHOW COLUMNS FROM `lines` LIKE \'last_activity\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label5001;
+}
+
+XUI::$db->query('ALTER TABLE `lines` ADD COLUMN `last_activity` INT(11) NULL DEFAULT NULL;');
+
+label5001:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams` LIKE \'year\';');
+goto label4133;
+
+label5006:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label5017;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `player_allow_hevc` TINYINT(1) NULL DEFAULT \'0\';');
+
+label5017:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams_servers` LIKE \'compatible\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3948;
+}
+
+goto label3944;
+
+label5029:
+
+XUI::$db->query('ALTER TABLE `providers_streams` ADD COLUMN `type` VARCHAR(16) NULL DEFAULT \'live\';');
+
+label5033:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'disable_xmltv_restreamer\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label3838;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `disable_xmltv_restreamer` TINYINT(1) NULL DEFAULT \'0\';');
+goto label3838;
+
+label5049:
+
+XUI::$db->query('SHOW COLUMNS FROM `servers_stats` LIKE \'total_users\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label5064;
+}
+
+XUI::$db->query('ALTER TABLE `servers_stats` ADD COLUMN `total_users` INT(11) NULL DEFAULT \'0\';');
+
+label5064:
+
+goto label4986;
+
+label5065:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `probe_extra_wait` INT(11) NULL DEFAULT \'10\';');
+
+label5069:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'restream_deny_unauthorised\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label189;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `restream_deny_unauthorised` TINYINT(1) NULL DEFAULT \'1\';');
+goto label189;
+
+label5085:
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `vod_sort_newest` TINYINT(1) NULL DEFAULT \'0\';');
+XUI::$db->query('ALTER TABLE `servers` CHANGE COLUMN `domain_name` `domain_name` MEDIUMTEXT NULL DEFAULT NULL;');
+
+label5093:
+
+XUI::$db->query('SHOW COLUMNS FROM `streams` LIKE \'adaptive_link\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label1579;
+}
+
+goto label1575;
+
+label5105:
+
+if (file_exists(XUI_HOME . 'admin/assets/css/custom.css')) {
+	goto label5123;
+}
+
+touch(XUI_HOME . 'admin/assets/css/custom.css');
+chown(XUI_HOME . 'admin/assets/css/custom.css', 'xui');
+
+label5123:
+
+goto label4108;
+
+label5124:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'cache_playlists\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label5139;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `cache_playlists` INT(11) NULL DEFAULT \'0\';');
+
+label5139:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'send_xui_header\';');
+goto label2547;
+
+label5144:
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label5155;
+}
+
+XUI::$db->query('ALTER TABLE `settings` ADD COLUMN `player_blur` TINYINT(1) NULL DEFAULT \'0\';');
+
+label5155:
+
+XUI::$db->query('SHOW COLUMNS FROM `settings` LIKE \'player_opacity\';');
+
+if (!(XUI::$db->num_rows() == 0)) {
+	goto label2915;
+}
+
+goto label2911;
+
+label5167:
+
+if (!file_exists(XUI_HOME . 'includes/cli/aes.php')) {
+	goto label5180;
+}
+
+unlink(XUI_HOME . 'includes/cli/aes.php');
+
+label5180:
+
+if (!file_exists(XUI_HOME . 'bin/ffmpeg')) {
+	goto label3548;
+}
+
+unlink(XUI_HOME . 'bin/ffmpeg');
+goto label3548;
+
+label5194:
+
+XUI::$db->query('UPDATE `servers` SET `xui_version` = ?, `xui_revision` = ? WHERE `id` = ?;', XUI_VERSION, XUI_REVISION, SERVER_ID);
+
+?>
