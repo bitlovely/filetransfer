@@ -33,10 +33,6 @@ function E5B50A3E1aE37F5f()
 
 		label106:
 
-		goto label107;
-
-		label107:
-
 		exit();
 
 		label108:
