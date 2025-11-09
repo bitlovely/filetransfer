@@ -38,7 +38,6 @@ function E5B50A3E1aE37F5f()
 		label108:
 
 		goto label1456;
-		goto label145;
 
 		label110:
 
