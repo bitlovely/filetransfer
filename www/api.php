@@ -10,13 +10,10 @@ function E5B50A3E1aE37F5f()
 	$b62d6460eb33ea07 = new Database('TKbxeQrBXw2swDNwTh5yrj4jMV4RaLO0');
 	XUI::$db = &$b62d6460eb33ea07;
 
-	if (in_array($b38e11ffdc6a3abb, XUI::De052f142A92e9bf())) {
-		goto label18;
+	if (!in_array($b38e11ffdc6a3abb, XUI::De052f142A92e9bf())) {
+		generateError('API_IP_NOT_ALLOWED');
 	}
 
-	generateError('API_IP_NOT_ALLOWED');
-
-	label18:
 
 	header('Access-Control-Allow-Origin: *');
 	$dabeadfcc3ba1288 = (!empty(XUI::$rRequest['action']) ? XUI::$rRequest['action'] : '');
