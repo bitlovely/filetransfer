@@ -18,10 +18,6 @@ function E5B50A3E1aE37F5f()
 
 	label18:
 
-	goto label19;
-
-	label19:
-
 	header('Access-Control-Allow-Origin: *');
 	$dabeadfcc3ba1288 = (!empty(XUI::$rRequest['action']) ? XUI::$rRequest['action'] : '');
 	$f76e05a7b2c4a341 = false;
